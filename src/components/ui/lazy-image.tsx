@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
+import { CONFIG } from '@/config/constants';
 
 interface LazyImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   placeholder?: string;
@@ -11,8 +12,8 @@ interface LazyImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
 const LazyImage: React.FC<LazyImageProps> = ({
   src,
   alt,
-  placeholder = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E",
-  fallback = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+  placeholder = CONFIG.IMAGES.PLACEHOLDER,
+  fallback = CONFIG.IMAGES.FALLBACK,
   className,
   priority = false,
   ...props
@@ -34,8 +35,8 @@ const LazyImage: React.FC<LazyImageProps> = ({
         }
       },
       {
-        rootMargin: '50px',
-        threshold: 0.1
+        rootMargin: CONFIG.IMAGES.LAZY_LOAD_MARGIN,
+        threshold: CONFIG.IMAGES.LAZY_LOAD_THRESHOLD
       }
     );
 

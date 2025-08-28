@@ -89,9 +89,11 @@ const OptimizedCarousel: React.FC<OptimizedCarouselProps> = ({
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
+        intervalRef.current = null;
       }
       if (progressRef.current) {
         clearInterval(progressRef.current);
+        progressRef.current = null;
       }
     };
   }, [autoPlay, isPaused, interval, nextSlide, updateProgress, enableHeavyAnimations]);
@@ -101,9 +103,11 @@ const OptimizedCarousel: React.FC<OptimizedCarouselProps> = ({
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
+        intervalRef.current = null;
       }
       if (progressRef.current) {
         clearInterval(progressRef.current);
+        progressRef.current = null;
       }
     };
   }, []);

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { usePerformance } from '@/hooks/use-performance';
+import { CONFIG } from '@/config/constants';
 
 interface OptimizedCursorProps {
   className?: string;
@@ -12,12 +13,7 @@ const OptimizedCursor: React.FC<OptimizedCursorProps> = ({ className = '' }) => 
   const cursorRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number | null>(null);
   const lastUpdateTime = useRef<number>(0);
-  const THROTTLE_DELAY = 16; // ~60fps
-
-  // Don't render cursor on mobile
-  if (isMobile) {
-    return null;
-  }
+  const THROTTLE_DELAY = CONFIG.PERFORMANCE.CURSOR_THROTTLE_DELAY; // ~60fps
 
   const updateCursorPosition = useCallback((x: number, y: number) => {
     const now = Date.now();
@@ -34,7 +30,7 @@ const OptimizedCursor: React.FC<OptimizedCursorProps> = ({ className = '' }) => 
     animationRef.current = requestAnimationFrame(() => {
       setCursorPosition({ x, y });
     });
-  }, []);
+  }, [THROTTLE_DELAY]);
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
     updateCursorPosition(e.clientX, e.clientY);
@@ -55,23 +51,31 @@ const OptimizedCursor: React.FC<OptimizedCursorProps> = ({ className = '' }) => 
 
     // Add hover listeners to clickable elements
     const clickableElements = document.querySelectorAll('a, button, [role="button"], .clickable');
-    clickableElements.forEach(el => {
+    const elementArray = Array.from(clickableElements);
+    
+    elementArray.forEach(el => {
       el.addEventListener('mouseenter', handleMouseEnter);
       el.addEventListener('mouseleave', handleMouseLeave);
     });
 
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
-      clickableElements.forEach(el => {
+      elementArray.forEach(el => {
         el.removeEventListener('mouseenter', handleMouseEnter);
         el.removeEventListener('mouseleave', handleMouseLeave);
       });
       
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
       }
     };
   }, [handleMouseMove, handleMouseEnter, handleMouseLeave, enableHeavyAnimations]);
+
+  // Don't render cursor on mobile - moved after all hooks
+  if (isMobile) {
+    return null;
+  }
 
   return (
     <div

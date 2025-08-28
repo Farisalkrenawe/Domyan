@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { CONFIG } from '@/config/constants';
 
 interface PerformanceConfig {
   isMobile: boolean;
@@ -13,7 +14,7 @@ export const usePerformance = (): PerformanceConfig => {
     isMobile: false,
     isLowEnd: false,
     reducedMotion: false,
-    animationDuration: 0.8,
+    animationDuration: CONFIG.PERFORMANCE.ANIMATION_DURATION.DEFAULT,
     enableHeavyAnimations: true,
   });
 
@@ -21,7 +22,7 @@ export const usePerformance = (): PerformanceConfig => {
     // Detect mobile device
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
       navigator.userAgent
-    ) || window.innerWidth <= 768;
+    ) || window.innerWidth <= CONFIG.BREAKPOINTS.MOBILE;
 
     // Detect reduced motion preference
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -30,12 +31,12 @@ export const usePerformance = (): PerformanceConfig => {
     const isLowEnd = navigator.hardwareConcurrency ? navigator.hardwareConcurrency <= 4 : false;
 
     // Calculate animation duration based on device capabilities
-    let animationDuration = 0.8;
+    let animationDuration = CONFIG.PERFORMANCE.ANIMATION_DURATION.DEFAULT;
     if (isMobile || reducedMotion) {
-      animationDuration = 0.3;
+      animationDuration = CONFIG.PERFORMANCE.ANIMATION_DURATION.MOBILE;
     }
     if (isLowEnd) {
-      animationDuration = 0.2;
+      animationDuration = CONFIG.PERFORMANCE.ANIMATION_DURATION.LOW_END;
     }
 
     // Determine if heavy animations should be enabled
@@ -55,7 +56,7 @@ export const usePerformance = (): PerformanceConfig => {
       setConfig(prev => ({
         ...prev,
         reducedMotion: e.matches,
-        animationDuration: e.matches ? 0.2 : (isMobile ? 0.3 : 0.8),
+        animationDuration: e.matches ? CONFIG.PERFORMANCE.ANIMATION_DURATION.LOW_END : (isMobile ? CONFIG.PERFORMANCE.ANIMATION_DURATION.MOBILE : CONFIG.PERFORMANCE.ANIMATION_DURATION.DEFAULT),
         enableHeavyAnimations: !e.matches && !isMobile && !isLowEnd,
       }));
     };

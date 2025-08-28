@@ -246,7 +246,7 @@ const Index = () => {
         name: "רמות מטרופוליטן",
         location: "רהט, ישראל",
         year: "2024",
-        description: "בית מגורים עכשווי רב-קומתי הכולל קווים גיאומטריים נקיים, מרפסות נרחבות ועיצוב עירוני מתוחכם."
+        description: "מקר ץמה מעכשווי רב-קומתי הכולל קווים גיאומטריים נקיים, מרפסות נרחבות ועיצוב עירוני מתוחכם."
       }, {
         name: "וילת גן עדן תכלת",
         location: "רהט, ישראל",
@@ -282,7 +282,7 @@ const Index = () => {
         desc: 'פתרונות אדריכליים מותאמים ללקוחות תובעניים המחפשים יוקרה ללא תחרות'
       }, {
         title: 'אדריכלות פנים',
-        desc: 'חללי פנים מותאמים אישית המשקפים תחכום ואלגנטיות נצחית'
+        desc: 'חללי פנים מותאמית המשקפים תחכום ואלגנטיות נצחית'
       }, {
         title: 'אינטגרציה נופית',
         desc: 'מיזוג חלק של אדריכלות עם הסביבה הטבעית'
@@ -371,7 +371,7 @@ const Index = () => {
         description: "فيلا فاخرة فائقة الحداثة تتميز بواجهات بيضاء نقية ومبادئ تصميم هندسية ومواد تشطيب فاخرة."
       }],
       testimonials: [{
-        quote: "حولت دوميان رؤيتنا إلى واقع خلاب. اهتمامهم بالتفاصيل والالتزام بالتميز لا مثيل له.",
+        quote: "حولت دوميان رؤיتنا إلى واقع خلاب. اهتمامهم بالتفاصيل والالتزام بالتميز لا مثيل له.",
         author: "سارة ميتشل",
         project: "مالكة فيلا، بيفرلي هيلز"
       }, {
@@ -468,7 +468,86 @@ const Index = () => {
   // Memoize projects and testimonials to prevent unnecessary re-renders
   const memoizedProjects = useMemo(() => projects, []);
   const memoizedTestimonials = useMemo(() => testimonials, []);
+
+  // Form state and validation
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    service: '',
+    message: ''
+  });
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
+  // Form validation
+  const validateForm = () => {
+    const errors: Record<string, string> = {};
+    
+    if (!formData.name.trim()) {
+      errors.name = language === 'he' ? 'שם הוא שדה חובה' : language === 'ar' ? 'الاسم مطلوب' : 'Name is required';
+    }
+    
+    if (!formData.email.trim()) {
+      errors.email = language === 'he' ? 'אימייל הוא שדה חובה' : language === 'ar' ? 'البريد الإلكتروني مطلوب' : 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = language === 'he' ? 'אימייל לא תקין' : language === 'ar' ? 'البريد الإلكتروني غير صحيح' : 'Invalid email format';
+    }
+    
+    if (!formData.message.trim()) {
+      errors.message = language === 'he' ? 'הודעה היא שדה חובה' : language === 'ar' ? 'الرسالة مطلوبة' : 'Message is required';
+    }
+    
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+    
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+    
+    try {
+      // Simulate form submission
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      setSubmitStatus('success');
+      setFormData({ name: '', email: '', phone: '', service: '', message: '' });
+      
+      // Reset success message after 5 seconds
+      setTimeout(() => setSubmitStatus('idle'), 5000);
+    } catch (error) {
+      setSubmitStatus('error');
+      
+      // Reset error message after 5 seconds
+      setTimeout(() => setSubmitStatus('idle'), 5000);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Handle input changes
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    
+    // Clear error when user starts typing
+    if (formErrors[field]) {
+      setFormErrors(prev => ({ ...prev, [field]: '' }));
+    }
+  };
   return <div className="min-h-screen bg-background" dir={direction}>
+      {/* Skip Navigation for Accessibility */}
+      <a href="#main-content" className="skip-nav">
+        {language === 'he' ? 'דלג לתוכן הראשי' : language === 'ar' ? 'تخطى إلى المحتوى الرئيسي' : 'Skip to main content'}
+      </a>
+      
       {/* Optimized Custom Cursor */}
       <OptimizedCursor />
 
@@ -552,7 +631,7 @@ const Index = () => {
 
       {/* Hero Section */}
       <section 
-        id="hero" 
+        id="main-content"
         className="relative h-screen overflow-hidden"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
@@ -892,19 +971,36 @@ const Index = () => {
               transition={{ duration: animationDuration }}
             >
               <Card className="luxury-card p-8">
-                <form className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">
                         {t.contactForm.name}
                       </label>
-                      <Input className="w-full" placeholder={t.contactForm.name} />
+                      <Input 
+                        className={`w-full ${formErrors.name ? 'border-red-500' : ''}`}
+                        placeholder={t.contactForm.name}
+                        value={formData.name}
+                        onChange={(e) => handleInputChange('name', e.target.value)}
+                      />
+                      {formErrors.name && (
+                        <p className="text-red-500 text-sm mt-1">{formErrors.name}</p>
+                      )}
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">
                         {t.contactForm.email}
                       </label>
-                      <Input type="email" className="w-full" placeholder={t.contactForm.email} />
+                      <Input 
+                        type="email" 
+                        className={`w-full ${formErrors.email ? 'border-red-500' : ''}`}
+                        placeholder={t.contactForm.email}
+                        value={formData.email}
+                        onChange={(e) => handleInputChange('email', e.target.value)}
+                      />
+                      {formErrors.email && (
+                        <p className="text-red-500 text-sm mt-1">{formErrors.email}</p>
+                      )}
                     </div>
                   </div>
                   <div className="grid md:grid-cols-2 gap-6">
@@ -912,17 +1008,28 @@ const Index = () => {
                       <label className="block text-sm font-medium text-foreground mb-2">
                         {t.contactForm.phone}
                       </label>
-                      <Input type="tel" className="w-full" placeholder={t.contactForm.phone} />
+                      <Input 
+                        type="tel" 
+                        className="w-full"
+                        placeholder={t.contactForm.phone}
+                        value={formData.phone}
+                        onChange={(e) => handleInputChange('phone', e.target.value)}
+                      />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">
                         {t.contactForm.service}
                       </label>
-                      <select className="w-full h-10 px-3 py-2 border border-input bg-background rounded-md text-sm">
-                        <option>Luxury Villa Design</option>
-                        <option>Interior Architecture</option>
-                        <option>Landscape Integration</option>
-                        <option>Full Project Management</option>
+                      <select 
+                        className="w-full h-10 px-3 py-2 border border-input bg-background rounded-md text-sm"
+                        value={formData.service}
+                        onChange={(e) => handleInputChange('service', e.target.value)}
+                      >
+                        <option value="">{language === 'he' ? 'בחר שירות' : language === 'ar' ? 'اختر الخدمة' : 'Select Service'}</option>
+                        <option value="Luxury Villa Design">Luxury Villa Design</option>
+                        <option value="Interior Architecture">Interior Architecture</option>
+                        <option value="Landscape Integration">Landscape Integration</option>
+                        <option value="Full Project Management">Full Project Management</option>
                       </select>
                     </div>
                   </div>
@@ -930,10 +1037,43 @@ const Index = () => {
                     <label className="block text-sm font-medium text-foreground mb-2">
                       {t.contactForm.message}
                     </label>
-                    <Textarea className="w-full min-h-32" placeholder={t.contactForm.message} />
+                    <Textarea 
+                      className={`w-full min-h-32 ${formErrors.message ? 'border-red-500' : ''}`}
+                      placeholder={t.contactForm.message}
+                      value={formData.message}
+                      onChange={(e) => handleInputChange('message', e.target.value)}
+                    />
+                    {formErrors.message && (
+                      <p className="text-red-500 text-sm mt-1">{formErrors.message}</p>
+                    )}
                   </div>
-                  <Button className="btn-luxury-filled w-full magnetic">
-                    {t.contactForm.submit}
+                  
+                  {/* Submit Status Messages */}
+                  {submitStatus === 'success' && (
+                    <div className="p-4 bg-green-50 border border-green-200 rounded-md">
+                      <p className="text-green-800 text-center">
+                        {language === 'he' ? 'ההודעה נשלחה בהצלחה!' : language === 'ar' ? 'تم إرسال الرسالة بنجاح!' : 'Message sent successfully!'}
+                      </p>
+                    </div>
+                  )}
+                  
+                  {submitStatus === 'error' && (
+                    <div className="p-4 bg-red-50 border border-red-200 rounded-md">
+                      <p className="text-red-800 text-center">
+                        {language === 'he' ? 'שגיאה בשליחת ההודעה. נסה שוב.' : language === 'ar' ? 'خطأ في إرسال الرسالة. حاول مرة أخرى.' : 'Error sending message. Please try again.'}
+                      </p>
+                    </div>
+                  )}
+                  
+                  <Button 
+                    type="submit"
+                    className="btn-luxury-filled w-full magnetic"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting 
+                      ? (language === 'he' ? 'שולח...' : language === 'ar' ? 'جاري الإرسال...' : 'Sending...')
+                      : t.contactForm.submit
+                    }
                   </Button>
                 </form>
               </Card>
