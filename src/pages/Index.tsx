@@ -16,6 +16,24 @@ const Index = () => {
   const [language, setLanguage] = useState('he');
   const [direction, setDirection] = useState('rtl');
 
+  // Mobile debugging
+  useEffect(() => {
+    if (isMobile && typeof window !== 'undefined') {
+      console.log('Mobile Debug Info:', {
+        userAgent: navigator.userAgent,
+        viewport: {
+          width: window.innerWidth,
+          height: window.innerHeight
+        },
+        devicePixelRatio: window.devicePixelRatio,
+        orientation: window.screen.orientation?.type || 'unknown',
+        isMobile,
+        animationDuration,
+        enableHeavyAnimations
+      });
+    }
+  }, [isMobile, animationDuration, enableHeavyAnimations]);
+
   // Luxury villa images for carousel
   const heroImages = ["/lovable-uploads/8d20c9fc-1ad5-4977-9593-a5406c9a6dbe.png", villaHeroImage, "/lovable-uploads/ea31bec1-6264-4ecf-969f-9f025c1b1c9f.png", "/lovable-uploads/3dc1f974-3c56-4e09-927a-0f943fe91d12.png", "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"];
 

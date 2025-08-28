@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { CONFIG } from '@/config/constants';
 
 interface PerformanceConfig {
@@ -18,7 +18,7 @@ export const usePerformance = (): PerformanceConfig => {
     enableHeavyAnimations: true,
   });
 
-  useEffect(() => {
+  const updateConfig = useCallback(() => {
     // Detect mobile device
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
       navigator.userAgent
@@ -49,21 +49,32 @@ export const usePerformance = (): PerformanceConfig => {
       animationDuration,
       enableHeavyAnimations,
     });
+  }, []);
+
+  useEffect(() => {
+    // Initial config update
+    updateConfig();
 
     // Listen for reduced motion changes
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const handleChange = (e: MediaQueryListEvent) => {
-      setConfig(prev => ({
-        ...prev,
-        reducedMotion: e.matches,
-        animationDuration: e.matches ? CONFIG.PERFORMANCE.ANIMATION_DURATION.LOW_END : (isMobile ? CONFIG.PERFORMANCE.ANIMATION_DURATION.MOBILE : CONFIG.PERFORMANCE.ANIMATION_DURATION.DEFAULT),
-        enableHeavyAnimations: !e.matches && !isMobile && !isLowEnd,
-      }));
+    const handleChange = () => {
+      updateConfig();
     };
 
     mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
-  }, []);
+    
+    // Listen for window resize
+    const handleResize = () => {
+      updateConfig();
+    };
+    
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      mediaQuery.removeEventListener('change', handleChange);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [updateConfig]);
 
   return config;
 };
