@@ -1,0 +1,417 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Domyan Luxury Architecture - Design System */
+
+@layer base {
+  :root {
+    /* Luxury Emerald & Gold Color Palette */
+    --background: 0 0% 100%;
+    --foreground: 180 100% 8%;
+    
+    /* Primary - Deep Emerald Green */
+    --primary: 180 75% 19%;
+    --primary-foreground: 45 85% 87%;
+    --primary-glow: 180 65% 25%;
+    
+    /* Luxury Gold Accent */
+    --accent: 45 100% 51%;
+    --accent-foreground: 180 100% 8%;
+    --accent-light: 45 85% 87%;
+    --accent-dark: 45 100% 41%;
+    
+    /* Secondary - Rich Teal */
+    --secondary: 180 55% 32%;
+    --secondary-foreground: 0 0% 100%;
+    
+    /* Forest Green Dark */
+    --dark: 180 100% 8%;
+    --dark-foreground: 0 0% 100%;
+    
+    /* Neutral Palette */
+    --muted: 45 25% 95%;
+    --muted-foreground: 180 25% 35%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 180 100% 8%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 180 100% 8%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 180 15% 90%;
+    --input: 180 15% 90%;
+    --ring: 45 100% 51%;
+    
+    --radius: 0.75rem;
+    
+    /* Luxury Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-gold: linear-gradient(135deg, hsl(var(--accent)), hsl(var(--accent-dark)));
+    --gradient-deep-green: linear-gradient(135deg, hsl(148 85% 20%), hsl(148 75% 30%));
+    --gradient-gold-border: linear-gradient(135deg, hsl(var(--accent)), hsl(var(--accent-light)), hsl(var(--accent-dark)));
+    --gradient-hero: linear-gradient(180deg, rgba(13, 79, 79, 0) 0%, rgba(13, 79, 79, 0.6) 100%);
+    
+    /* Luxury Shadows */
+    --shadow-luxury: 0 25px 50px -12px rgba(13, 79, 79, 0.25);
+    --shadow-gold: 0 0 40px rgba(212, 175, 55, 0.3);
+    --shadow-glass: 0 8px 32px rgba(31, 38, 135, 0.37);
+    
+    /* Animation Timing */
+    --transition-luxury: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  .dark {
+    --background: 180 100% 8%;
+    --foreground: 0 0% 100%;
+    --primary: 45 100% 51%;
+    --primary-foreground: 180 100% 8%;
+    --card: 180 90% 10%;
+    --card-foreground: 0 0% 100%;
+    --popover: 180 90% 10%;
+    --popover-foreground: 0 0% 100%;
+    --muted: 180 50% 15%;
+    --muted-foreground: 180 25% 65%;
+    --border: 180 30% 20%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    cursor: auto; /* Default cursor for mobile */
+  }
+  
+  .font-serif {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+  
+  .font-sans {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  /* Custom Luxury Cursor */
+  .custom-cursor {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    background: hsl(var(--accent));
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: difference;
+    transition: var(--transition-smooth);
+    box-shadow: var(--shadow-gold);
+  }
+  
+  .custom-cursor::after {
+    content: '';
+    position: absolute;
+    top: -15px;
+    left: -15px;
+    width: 50px;
+    height: 50px;
+    border: 1px solid hsl(var(--accent) / 0.3);
+    border-radius: 50%;
+    transition: var(--transition-smooth);
+  }
+  
+  .custom-cursor.hover {
+    transform: scale(1.5);
+    background: transparent;
+    border: 2px solid hsl(var(--accent));
+  }
+  
+  .custom-cursor.hover::after {
+    transform: scale(1.2);
+    border-color: hsl(var(--accent) / 0.6);
+  }
+  
+  /* Glass Morphism Effect */
+  .glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  /* Luxury Button Styles */
+  .btn-luxury {
+    @apply px-8 py-4 font-semibold tracking-wide transition-all duration-500;
+    @apply border-2 border-accent text-accent;
+    @apply hover:bg-accent hover:text-dark;
+    @apply focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2;
+    background: linear-gradient(135deg, transparent 0%, hsl(var(--accent) / 0.1) 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .btn-luxury::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
+  
+  .btn-luxury:hover::before {
+    left: 100%;
+  }
+  
+  .btn-luxury-filled {
+    @apply btn-luxury bg-accent text-dark;
+    @apply hover:bg-accent-dark hover:shadow-2xl;
+  }
+  
+  /* Luxury Card Styles */
+  .luxury-card {
+    @apply bg-card/80 backdrop-blur-sm border border-border/50;
+    @apply shadow-lg hover:shadow-luxury transition-all duration-500;
+    @apply hover:-translate-y-2 hover:border-accent/30;
+  }
+  
+  /* Ken Burns Effect - Slower Animation */
+  @keyframes kenBurns {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.1); }
+  }
+  
+  .ken-burns {
+    animation: kenBurns 15s ease-in-out infinite alternate;
+  }
+  
+  /* Floating Animation */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) scale(1); }
+    50% { transform: translateY(-10px) scale(1.05); }
+  }
+  
+  .floating {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  .floating-slow {
+    animation: float 9s ease-in-out infinite;
+  }
+  
+  /* Luxury Gold Glow */
+  .gold-glow {
+    box-shadow: 0 0 20px hsl(var(--accent) / 0.5);
+  }
+
+  /* WhatsApp Button Glow */
+  .whatsapp-glow {
+    box-shadow: 
+      0 0 20px hsl(var(--accent) / 0.2),
+      0 0 40px hsl(var(--accent) / 0.1),
+      inset 0 0 0 1px hsl(var(--accent) / 0.15);
+    animation: whatsapp-elegant-glow 6s ease-in-out infinite;
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .whatsapp-glow:hover {
+    box-shadow: 
+      0 0 35px hsl(var(--accent) / 0.4),
+      0 0 70px hsl(var(--accent) / 0.2),
+      inset 0 0 0 1px hsl(var(--accent) / 0.3);
+    transform: scale(1.05);
+  }
+
+  @keyframes whatsapp-elegant-glow {
+    0%, 100% { 
+      box-shadow: 
+        0 0 20px hsl(var(--accent) / 0.2),
+        0 0 40px hsl(var(--accent) / 0.1),
+        inset 0 0 0 1px hsl(var(--accent) / 0.15);
+    }
+    50% { 
+      box-shadow: 
+        0 0 30px hsl(var(--accent) / 0.3),
+        0 0 60px hsl(var(--accent) / 0.15),
+        inset 0 0 0 1px hsl(var(--accent) / 0.25);
+    }
+  }
+  
+  /* Parallax Container */
+  .parallax {
+    will-change: transform;
+  }
+  
+  /* Mobile Cursor Override */
+  @media (hover: none) and (pointer: coarse) {
+    body {
+      cursor: auto;
+    }
+    
+    .custom-cursor {
+      display: none;
+    }
+  }
+  
+  /* Performance optimizations for mobile */
+  @media (max-width: 768px) {
+    .ken-burns {
+      animation: none; /* Disable Ken Burns on mobile */
+    }
+    
+    .floating {
+      animation: none; /* Disable floating animations on mobile */
+    }
+    
+    .floating-slow {
+      animation: none; /* Disable slow floating animations on mobile */
+    }
+  }
+  
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .ken-burns,
+    .floating,
+    .floating-slow,
+    .custom-cursor {
+      animation: none;
+      transition: none;
+    }
+    
+    .magnetic:hover {
+      transform: none;
+    }
+  }
+  
+  /* RTL Support */
+  [dir="rtl"] {
+    text-align: right;
+  }
+  
+  [dir="rtl"] .hero-content {
+    direction: rtl;
+  }
+  
+  /* Luxury Text Styles */
+  .text-luxury {
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  /* Deep Green Gradient Numbers */
+  .text-deep-green {
+    background: var(--gradient-deep-green);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+  }
+  
+  /* Green Gradient Text */
+  .text-green-gradient {
+    background: linear-gradient(135deg, #10b981, #059669, #047857);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+    transition: all 0.3s ease;
+  }
+  
+  .text-green-gradient:hover {
+    background: linear-gradient(135deg, #34d399, #10b981, #059669);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    cursor: pointer;
+  }
+  
+  /* Golden Gradient Border */
+  .border-gold-gradient {
+    position: relative;
+  }
+  
+  .border-gold-gradient::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    padding: 3px;
+    background: var(--gradient-gold-border);
+    border-radius: inherit;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: xor;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    pointer-events: none;
+  }
+  
+  /* Magnetic Button Effect */
+  .magnetic {
+    position: relative;
+    transition: var(--transition-luxury);
+  }
+  
+  .magnetic:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-luxury);
+  }
+  
+  /* Progress Bar */
+  .progress-line {
+    width: 60px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .progress-line.active::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: hsl(var(--accent));
+    animation: progressFill 7s ease-in-out;
+  }
+  
+  @keyframes progressFill {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(0); }
+  }
+  
+  /* Luxury Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary));
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary) / 0.8);
+  }
+}
