@@ -1,0 +1,28 @@
+{
+  "name": "DOMYAN - Luxury Architecture & Design",
+  "short_name": "DOMYAN",
+  "description": "Crafting architectural masterpieces where luxury meets innovation",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2d8b7b",
+  "icons": [
+    {
+      "src": "/logo.jpg",
+      "sizes": "140x40",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    }
+  ]
+}
