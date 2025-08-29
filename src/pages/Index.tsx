@@ -860,7 +860,7 @@ const Index = () => {
               {/* CEO Name and Title */}
               <div className="mt-6 text-center space-y-1">
                 <div className="text-lg font-semibold text-foreground">
-                  {language === 'ar' ? 'محمد القريناوي' : language === 'he' ? 'מוחמד אלקינאוי' : 'Mohammed Alkrinawi'}
+                  {language === 'ar' ? 'محمد القريناوي' : language === 'he' ? 'מומחד אלקרינאוי' : 'Mohammed Alkrinawi'}
                 </div>
                 <div className="text-sm text-muted-foreground font-medium">
                   {language === 'ar' ? 'المدير التنفيذي والمؤسس' : language === 'he' ? 'מנכ"ל ומייסד' : 'CEO & Founder'}
