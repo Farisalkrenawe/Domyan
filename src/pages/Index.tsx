@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import OptimizedCursor from '@/components/ui/optimized-cursor';
 import OptimizedCarousel from '@/components/ui/optimized-carousel';
 import LazyImage from '@/components/ui/lazy-image';
+import { AnimatedCounter } from '@/components/ui/animated-counter';
 import { usePerformance } from '@/hooks/use-performance';
 import villaHeroImage from '@/assets/villa-hero.jpg';
 const Index = () => {
@@ -786,24 +787,65 @@ const Index = () => {
               </p>
               
               {/* Statistics */}
-              <div className="grid grid-cols-2 gap-8">
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: animationDuration, delay: 0.5 }}
+                className="grid grid-cols-2 gap-8"
+              >
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-deep-green">50+</div>
+                  <div className="text-3xl font-bold text-deep-green">
+                    <AnimatedCounter 
+                      end={50} 
+                      start={0}
+                      suffix="+" 
+                      duration={3000}
+                      delay={200}
+                      enabled={enableHeavyAnimations}
+                    />
+                  </div>
                   <div className="text-sm text-muted-foreground">{t.stats.projects}</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-deep-green">12</div>
+                  <div className="text-3xl font-bold text-deep-green">
+                    <AnimatedCounter 
+                      end={12} 
+                      start={0}
+                      duration={2500}
+                      delay={400}
+                      enabled={enableHeavyAnimations}
+                    />
+                  </div>
                   <div className="text-sm text-muted-foreground">{t.stats.years}</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-deep-green">A+</div>
+                  <div className="text-3xl font-bold text-deep-green">
+                    <AnimatedCounter 
+                      end={1} 
+                      start={0}
+                      prefix="A" 
+                      suffix="+" 
+                      duration={2000}
+                      delay={600}
+                      enabled={enableHeavyAnimations}
+                    />
+                  </div>
                   <div className="text-sm text-muted-foreground">{t.stats.awards}</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-deep-green">100%</div>
+                  <div className="text-3xl font-bold text-deep-green">
+                    <AnimatedCounter 
+                      end={100} 
+                      start={0}
+                      suffix="%" 
+                      duration={3500}
+                      delay={800}
+                      enabled={enableHeavyAnimations}
+                    />
+                  </div>
                   <div className="text-sm text-muted-foreground">{t.stats.clients}</div>
                 </div>
-              </div>
+              </motion.div>
             </motion.div>
             
             <motion.div 

@@ -2,7 +2,7 @@
   "name": "DOMYAN - Luxury Architecture & Design",
   "short_name": "DOMYAN",
   "description": "Crafting architectural masterpieces where luxury meets innovation",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#2d8b7b",
