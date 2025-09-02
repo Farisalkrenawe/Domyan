@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { usePerformance } from '@/hooks/use-performance';
 import { CONFIG } from '@/config/constants';
 
@@ -6,7 +6,7 @@ interface OptimizedCursorProps {
   className?: string;
 }
 
-const OptimizedCursor: React.FC<OptimizedCursorProps> = ({ className = '' }) => {
+const OptimizedCursor = ({ className = '' }: OptimizedCursorProps) => {
   const { isMobile, enableHeavyAnimations } = usePerformance();
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);

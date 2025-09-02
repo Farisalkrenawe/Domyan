@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap&text=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789');
 
 @tailwind base;
 @tailwind components;
@@ -96,6 +96,10 @@
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     cursor: auto; /* Default cursor for mobile */
+    /* Performance optimizations */
+    will-change: auto;
+    transform: translateZ(0);
+    backface-visibility: hidden;
   }
   
   .font-serif {
@@ -231,6 +235,9 @@
   
   .ken-burns {
     animation: kenBurns 15s ease-in-out infinite alternate;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
   }
   
   /* Floating Animation */

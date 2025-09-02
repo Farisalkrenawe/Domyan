@@ -7,7 +7,7 @@ import { usePerformanceMonitor } from "./hooks/use-performance-monitor";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import CountUpInit from "./components/CountUpInit";
-import { Component, ErrorInfo, ReactNode } from "react";
+import { Component, ReactNode } from "react";
 
 const queryClient = new QueryClient();
 
@@ -22,7 +22,7 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boole
     return { hasError: true };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  componentDidCatch(error: Error, errorInfo: any) {
     console.error('App Error:', error, errorInfo);
   }
 

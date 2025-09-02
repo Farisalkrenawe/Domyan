@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { CONFIG } from '@/config/constants';
 
@@ -9,7 +9,7 @@ interface LazyImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   priority?: boolean;
 }
 
-const LazyImage: React.FC<LazyImageProps> = ({
+const LazyImage = ({
   src,
   alt,
   placeholder = CONFIG.IMAGES.PLACEHOLDER,
@@ -52,6 +52,21 @@ const LazyImage: React.FC<LazyImageProps> = ({
       }
     };
   }, [priority]);
+
+  // Preload critical images
+  useEffect(() => {
+    if (priority && src) {
+      const link = document.createElement('link');
+      link.rel = 'preload';
+      link.as = 'image';
+      link.href = src;
+      document.head.appendChild(link);
+      
+      return () => {
+        document.head.removeChild(link);
+      };
+    }
+  }, [priority, src]);
 
   const handleLoad = () => {
     setIsLoaded(true);

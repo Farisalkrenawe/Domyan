@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, Phone, Mail, MapPin, Menu, X, Globe, Home, Facebook, Instagram, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import OptimizedCursor from '@/components/ui/optimized-cursor';
 import LazyImage from '@/components/ui/lazy-image';
 import { ImageCarousel } from '@/components/ui/image-carousel';
+import CountUpInit from '@/components/CountUpInit';
 
 import { usePerformance } from '@/hooks/use-performance';
 import villaHeroImage from '@/assets/villa-hero.jpg';
@@ -17,24 +18,55 @@ const Index = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [language, setLanguage] = useState('he');
   const [direction, setDirection] = useState('rtl');
+  const [isLoading, setIsLoading] = useState(true);
+  const [visibleProjectsCount, setVisibleProjectsCount] = useState(3);
+  const menuRef = useRef<HTMLDivElement>(null);
 
-  // Mobile debugging
+  // Mobile debugging (only in development)
   useEffect(() => {
-    if (isMobile && typeof window !== 'undefined') {
+    if (process.env.NODE_ENV === 'development' && isMobile && typeof window !== 'undefined') {
       console.log('Mobile Debug Info:', {
         userAgent: navigator.userAgent,
         viewport: {
-          width: window.innerWidth,
-          height: window.innerHeight
+          width: window.innerWidth || 0,
+          height: window.innerHeight || 0
         },
-        devicePixelRatio: window.devicePixelRatio,
-        orientation: window.screen.orientation?.type || 'unknown',
+        devicePixelRatio: window.devicePixelRatio || 1,
+        orientation: 'unknown',
         isMobile,
         animationDuration,
         enableHeavyAnimations
       });
     }
   }, [isMobile, animationDuration, enableHeavyAnimations]);
+
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isMenuOpen && menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        // Don't close if clicking on navigation links
+        const target = event.target as HTMLElement;
+        if (target.tagName === 'A' && target.getAttribute('href')?.startsWith('#')) {
+          return;
+        }
+        // Don't close if clicking on the menu button
+        if (target.closest('button') && target.closest('button')?.querySelector('svg')) {
+          return;
+        }
+        setIsMenuOpen(false);
+      }
+    };
+
+    if (isMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [isMenuOpen]);
 
   // Luxury villa images for carousel - Desktop optimized (landscape/horizontal)
   const desktopHeroImages = [
@@ -147,6 +179,7 @@ const Index = () => {
       heroSubtitle: 'Where Luxury Meets Innovation',
       discoverPortfolio: 'Discover Our Portfolio',
       scheduleConsultation: 'Schedule Free Consultation',
+      whatsappMessage: 'Hello%20Domyan,%20I\'m%20interested%20in%20discussing%20a%20luxury%20architecture%20project',
       aboutTitle: 'Architectural Excellence Redefined',
       aboutText: "At Domyan, we don't just design buildings; we craft living masterpieces that harmonize luxury, functionality, and timeless elegance. With over two decades of experience in creating bespoke architectural solutions, we transform dreams into iconic structures.",
       portfolioTitle: 'Featured Projects',
@@ -169,6 +202,8 @@ const Index = () => {
       interactiveMap: 'Interactive Map',
       footerDescription: 'Crafting architectural masterpieces where luxury meets innovation. Transforming dreams into iconic structures for over two decades.',
       footerFinalCopyright: 'Crafted with excellence by Faris Alkrinawi © 2024. All rights reserved.',
+      projectNumber: 'Project #',
+      projectOverview: 'Project Overview',
       projects: [{
         name: "Luxury Villa with Middle Eastern Design",
         location: "Rahat, Israel",
@@ -281,6 +316,7 @@ const Index = () => {
       heroSubtitle: 'איכות היוקרה פוגשת חדשנות',
       discoverPortfolio: 'גלה את הפורטפוליו שלנו',
       scheduleConsultation: 'קבע פגישת ייעוץ בחינם',
+      whatsappMessage: 'שלום%20דומיאן,%20אני%20מעוניין%20לקבל%20ייעוץ%20אדריכלי%20לגבי%20פרויקט%20יוקרה',
       aboutTitle: 'מצוינות אדריכלית מחדש',
       aboutText: "בדומיאן, אנחנו לא רק מעצבים בניינים; אנחנו יוצרים יצירות מופת חיות המשלבות יוקרה, פונקציונליות ואלגנטיות נצחית. עם למעלה משני עשורים של ניסיון ביצירת פתרונות אדריכליים מותאמים אישית, אנחנו הופכים חלומות למבנים איקוניים.",
       portfolioTitle: 'פרויקטים נבחרים',
@@ -303,6 +339,8 @@ const Index = () => {
       interactiveMap: 'מפה אינטראקטיבית',
       footerDescription: 'יוצרים יצירות מופת אדריכליות שבהן יוקרה פוגשת חדשנות. הופכים חלומות למבנים איקוניים למעלה משני עשורים.',
       footerFinalCopyright: 'נוצר במצוינות על ידי פארס אלקרינאוי © 2025. כל הזכויות שמורות.',
+      projectNumber: 'פרויקט #',
+      projectOverview: 'סקירת הפרויקט',
       projects: [{
         name: "וילת יוקרה עם עיצוב מזרח תיכוני",
         location: "רהט, ישראל",
@@ -415,6 +453,7 @@ const Index = () => {
       heroSubtitle: 'حيث تلتقي الفخامة بالابتكار',
       discoverPortfolio: 'اكتشف محفظتنا',
       scheduleConsultation: 'حدد موعد استشارة مجاناً',
+      whatsappMessage: 'مرحبا%20دوميان،%20أنا%20مهتم%20بالحصول%20على%20استشارة%20معمارية%20بخصوص%20مشروع%20فاخر',
       aboutTitle: 'إعادة تعريف التميز المعماري',
       aboutText: "في دوميان، نحن لا نصمم المباني فقط؛ نصنع تحفاً حية تجمع بين الفخامة والوظائف والأناقة الخالدة. مع أكثر من عقدين من الخبرة في إنشاء حلول معمارية مخصصة، نحول الأحلام إلى هياكل أيقونية.",
       portfolioTitle: 'المشاريع المميزة',
@@ -437,6 +476,8 @@ const Index = () => {
       interactiveMap: 'خريطة تفاعلية',
       footerDescription: 'صناعة التحف المعمارية حيث تلتقي الفخامة بالابتكار. تحويل الأحلام إلى هياكل أيقونية لأكثر من عقدين.',
       footerFinalCopyright: 'صُنع بامتياز بواسطة فارس القريناوي © 2024. جميع الحقوق محفوظة.',
+      projectNumber: 'مشروع #',
+      projectOverview: 'نظرة عامة على المشروع',
       projects: [{
         name: "فيلا فاخرة بتصميم شرق أوسطي",
         location: "رهط، إسرائيل",
@@ -491,6 +532,11 @@ const Index = () => {
   // Memoize translations to prevent unnecessary re-renders
   const t = useMemo(() => translations[language as keyof typeof translations], [language]);
 
+  // Handle "See More" projects
+  const handleSeeMore = useCallback(() => {
+    setVisibleProjectsCount(prev => Math.min(prev + 3, t.projects.length));
+  }, [t.projects.length]);
+
   // Memoize hero images to prevent unnecessary re-renders
   const memoizedHeroImages = useMemo(() => heroImages, [heroImages, isMobile]);
   
@@ -526,6 +572,23 @@ const Index = () => {
     
     return () => clearInterval(interval);
   }, [isPaused, nextSlide, enableHeavyAnimations]);
+
+  // Optimize carousel performance by preloading next/previous images
+  useEffect(() => {
+    if (!enableHeavyAnimations) return;
+    
+    const preloadImage = (src: string) => {
+      const img = new Image();
+      img.src = src;
+    };
+    
+    // Preload next and previous images
+    const nextIndex = (currentSlide + 1) % memoizedHeroImages.length;
+    const prevIndex = (currentSlide - 1 + memoizedHeroImages.length) % memoizedHeroImages.length;
+    
+    preloadImage(memoizedHeroImages[nextIndex]);
+    preloadImage(memoizedHeroImages[prevIndex]);
+  }, [currentSlide, memoizedHeroImages, enableHeavyAnimations]);
   
   // Progress bar animation
   useEffect(() => {
@@ -544,12 +607,41 @@ const Index = () => {
     return () => clearInterval(progressInterval);
   }, [isPaused, nextSlide]);
 
+  // Keyboard navigation for carousel
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return; // Don't interfere with form inputs
+      }
+      
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        prevSlide();
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        nextSlide();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [prevSlide, nextSlide]);
+
   // Language change handler
   const handleLanguageChange = (lang: string) => {
     setLanguage(lang);
     setDirection(translations[lang as keyof typeof translations].direction);
     document.documentElement.setAttribute('dir', translations[lang as keyof typeof translations].direction);
   };
+
+  // Loading state management
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000); // Show loading for 1 second
+
+    return () => clearTimeout(timer);
+  }, []);
 
   // Memoize projects and testimonials to prevent unnecessary re-renders
   const memoizedProjects = useMemo(() => projects, []);
@@ -601,15 +693,25 @@ const Index = () => {
     setSubmitStatus('idle');
     
     try {
-      // Simulate form submission
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Simulate form submission with better error handling
+      await new Promise((resolve, reject) => {
+        setTimeout(() => {
+          // Simulate occasional network errors
+          if (Math.random() < 0.1) {
+            reject(new Error('Network error'));
+          } else {
+            resolve(true);
+          }
+        }, 2000);
+      });
       
       setSubmitStatus('success');
       setFormData({ name: '', email: '', phone: '', service: '', message: '' });
       
       // Reset success message after 5 seconds
       setTimeout(() => setSubmitStatus('idle'), 5000);
-    } catch {
+    } catch (error) {
+      console.error('Form submission error:', error);
       setSubmitStatus('error');
       
       // Reset error message after 5 seconds
@@ -619,16 +721,31 @@ const Index = () => {
     }
   };
 
-  // Handle input changes
-  const handleInputChange = (field: string, value: string) => {
+  // Handle input changes with debouncing
+  const handleInputChange = useCallback((field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     
     // Clear error when user starts typing
     if (formErrors[field]) {
       setFormErrors(prev => ({ ...prev, [field]: '' }));
     }
-  };
-  return <div className="min-h-screen bg-background" dir={direction}>
+  }, [formErrors]);
+
+  // Loading screen
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-4xl font-serif font-bold text-green-gradient mb-4 animate-pulse">
+            DOMYAN
+          </div>
+          <div className="w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+        </div>
+      </div>
+    );
+  }
+
+  return <div className="min-h-screen bg-background overflow-x-hidden" dir={direction}>
       {/* Skip Navigation for Accessibility */}
       <a href="#main-content" className="skip-nav">
         {language === 'he' ? 'דלג לתוכן הראשי' : language === 'ar' ? 'تخطى إلى المحتوى الرئيسي' : 'Skip to main content'}
@@ -636,6 +753,9 @@ const Index = () => {
       
       {/* Optimized Custom Cursor */}
       <OptimizedCursor />
+      
+      {/* CountUp Initialization */}
+      <CountUpInit />
 
       {/* Navigation Header */}
       <nav className="fixed top-0 w-full z-50 glass">
@@ -681,13 +801,13 @@ const Index = () => {
                 </Button>
                 <div className="absolute right-0 top-full mt-2 w-32 glass rounded-lg p-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
                   <button onClick={() => handleLanguageChange('en')} className="flex items-center w-full px-3 py-2 text-sm hover:bg-accent/10 rounded">
-                    🇬🇧 English
+                    English
                   </button>
                   <button onClick={() => handleLanguageChange('he')} className="flex items-center w-full px-3 py-2 text-sm hover:bg-accent/10 rounded">
-                    🇮🇱 עברית
+                    Hebrew
                   </button>
                   <button onClick={() => handleLanguageChange('ar')} className="flex items-center w-full px-3 py-2 text-sm hover:bg-accent/10 rounded">
-                    🇸🇦 العربية
+                    Arabic
                   </button>
                 </div>
               </div>
@@ -702,7 +822,9 @@ const Index = () => {
 
         {/* Mobile Menu */}
         <AnimatePresence>
-          {isMenuOpen && <motion.div initial={{
+          {isMenuOpen && <motion.div 
+            ref={menuRef}
+            initial={{
           opacity: 0,
           height: 0
         }} animate={{
@@ -758,15 +880,17 @@ const Index = () => {
         {/* Navigation Arrows */}
         <button 
           onClick={prevSlide} 
-          className="absolute left-8 top-1/2 -translate-y-1/2 w-14 h-14 bg-white/10 backdrop-blur-sm border border-white/30 rounded-full flex items-center justify-center text-white hover:bg-white/20 hover:border-white/50 transition-all duration-300 z-50 cursor-pointer"
-          aria-label="Previous slide"
+          className="absolute left-8 top-1/2 -translate-y-1/2 w-14 h-14 bg-white/10 backdrop-blur-sm border border-white/30 rounded-full flex items-center justify-center text-white hover:bg-white/20 hover:border-white/50 transition-all duration-300 z-50 cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-transparent"
+          aria-label={`Previous slide (${currentSlide === 0 ? memoizedHeroImages.length : currentSlide} of ${memoizedHeroImages.length})`}
+          disabled={!enableHeavyAnimations}
         >
           <ChevronLeft className="w-7 h-7" />
         </button>
         <button 
           onClick={nextSlide} 
-          className="absolute right-8 top-1/2 -translate-y-1/2 w-14 h-14 bg-white/10 backdrop-blur-sm border border-white/30 rounded-full flex items-center justify-center text-white hover:bg-white/20 hover:border-white/50 transition-all duration-300 z-50 cursor-pointer"
-          aria-label="Next slide"
+          className="absolute right-8 top-1/2 -translate-y-1/2 w-14 h-14 bg-white/10 backdrop-blur-sm border border-white/30 rounded-full flex items-center justify-center text-white hover:bg-white/20 hover:border-white/50 transition-all duration-300 z-50 cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-transparent"
+          aria-label={`Next slide (${currentSlide === memoizedHeroImages.length - 1 ? 1 : currentSlide + 2} of ${memoizedHeroImages.length})`}
+          disabled={!enableHeavyAnimations}
         >
           <ChevronRight className="w-7 h-7" />
         </button>
@@ -835,7 +959,10 @@ const Index = () => {
               transition={{ duration: animationDuration, delay: 0.9 }}
               className="flex flex-col sm:flex-row gap-6 justify-center"
             >
-              <Button className="btn-luxury magnetic text-lg px-8 py-4 h-auto min-h-[60px]">
+              <Button 
+                className="btn-luxury magnetic text-lg px-8 py-4 h-auto min-h-[60px]"
+                onClick={() => window.open(`https://wa.me/972524460770?text=${t.whatsappMessage}`, '_blank')}
+              >
                 {t.scheduleConsultation}
               </Button>
             </motion.div>
@@ -954,7 +1081,7 @@ const Index = () => {
           </motion.div>
 
           <div className="space-y-16">
-            {t.projects.map((project, index) => (
+            {t.projects.slice(0, visibleProjectsCount).map((project, index) => (
               <motion.div 
                 key={index} 
                 initial={{ opacity: 0, y: 50 }}
@@ -969,16 +1096,7 @@ const Index = () => {
                       <h3 className="text-3xl font-serif font-bold text-gray-800 mb-2">
                         {project.name}
                       </h3>
-                      <div className="flex items-center gap-6 text-sm text-gray-600">
-                        <span className="flex items-center gap-2">
-                          <MapPin className="w-4 h-4 text-green-600" />
-                          {project.location}
-                        </span>
-                        <span className="flex items-center gap-2">
-                          <span className="w-2 h-2 bg-green-600 rounded-full"></span>
-                          {project.year}
-                        </span>
-                      </div>
+
                     </div>
                     <div className="text-right">
                       <motion.div 
@@ -992,7 +1110,7 @@ const Index = () => {
                         }}
                         className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent mb-2"
                       >
-                        Project #{index + 1}
+                        {t.projectNumber}{index + 1}
                       </motion.div>
                     </div>
                   </div>
@@ -1013,33 +1131,13 @@ const Index = () => {
                   <div className="p-8 bg-gray-50 flex flex-col justify-center">
                     <div className="space-y-6">
                       <div>
-                        <h4 className="text-lg font-semibold text-gray-800 mb-3">Project Overview</h4>
+                        <h4 className="text-lg font-semibold text-gray-800 mb-3">{t.projectOverview}</h4>
                         <p className="text-gray-600 leading-relaxed">
                           {project.description}
                         </p>
                       </div>
                       
-                      <div className="space-y-3">
-                        <h4 className="text-lg font-semibold text-gray-800">Key Features</h4>
-                        <div className="grid grid-cols-2 gap-3">
-                          <div className="flex items-center gap-2 text-sm text-gray-600">
-                            <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                            Luxury Design
-                          </div>
-                          <div className="flex items-center gap-2 text-sm text-gray-600">
-                            <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                            Modern Architecture
-                          </div>
-                          <div className="flex items-center gap-2 text-sm text-gray-600">
-                            <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                            Premium Materials
-                          </div>
-                          <div className="flex items-center gap-2 text-sm text-gray-600">
-                            <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                            Custom Details
-                          </div>
-                        </div>
-                      </div>
+
 
 
                     </div>
@@ -1048,6 +1146,23 @@ const Index = () => {
               </motion.div>
             ))}
           </div>
+
+          {/* See More Button */}
+          {visibleProjectsCount < t.projects.length && (
+            <motion.div 
+              className="text-center mt-12"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <Button 
+                onClick={handleSeeMore}
+                className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors duration-300"
+              >
+                {language === 'he' ? 'ראה עוד' : language === 'ar' ? 'شاهد المزيد' : 'See More'}
+              </Button>
+            </motion.div>
+          )}
         </div>
       </section>
 
@@ -1068,7 +1183,7 @@ const Index = () => {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
             {t.services.map((service, index) => (
               <motion.div 
                 key={index} 
@@ -1076,12 +1191,12 @@ const Index = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: animationDuration, delay: index * 0.1 }}
               >
-                <Card className="luxury-card text-center p-8 group">
-                  <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-green-600/10 flex items-center justify-center group-hover:bg-green-600/20 transition-colors">
-                    <Home className="w-8 h-8 text-green-600" />
+                <Card className="luxury-card text-center p-4 md:p-8 group">
+                  <div className="w-12 h-12 md:w-16 md:h-16 mx-auto mb-4 md:mb-6 rounded-full bg-green-600/10 flex items-center justify-center group-hover:bg-green-600/20 transition-colors">
+                    <Home className="w-6 h-6 md:w-8 md:h-8 text-green-600" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-4">{service.title}</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">{service.desc}</p>
+                  <h3 className="text-lg md:text-xl font-semibold mb-3 md:mb-4">{service.title}</h3>
+                  <p className="text-muted-foreground text-xs md:text-sm leading-relaxed">{service.desc}</p>
                 </Card>
               </motion.div>
             ))}
@@ -1458,7 +1573,7 @@ const Index = () => {
                         }}
                       >
                         {currentName}
-                        <motion.div
+                        <motion.span
                           className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-200/30 to-transparent"
                           animate={{
                             x: ['-100%', '100%'],

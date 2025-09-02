@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -49,9 +49,11 @@ export function ImageCarousel({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [nextImage, prevImage]);
 
-  // Touch/swipe support
+  // Touch/swipe support with throttling
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const lastSwipeTime = useRef<number>(0);
+  const SWIPE_THROTTLE = 300; // ms
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStart(e.targetTouches[0].clientX);
@@ -64,14 +66,23 @@ export function ImageCarousel({
   const handleTouchEnd = () => {
     if (!touchStart || !touchEnd) return;
     
+    const now = Date.now();
+    if (now - lastSwipeTime.current < SWIPE_THROTTLE) {
+      setTouchStart(null);
+      setTouchEnd(null);
+      return;
+    }
+    
     const distance = touchStart - touchEnd;
     const isLeftSwipe = distance > 50;
     const isRightSwipe = distance < -50;
 
     if (isLeftSwipe) {
       nextImage();
+      lastSwipeTime.current = now;
     } else if (isRightSwipe) {
       prevImage();
+      lastSwipeTime.current = now;
     }
 
     setTouchStart(null);
