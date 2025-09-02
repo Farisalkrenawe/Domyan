@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { usePerformanceMonitor } from "./hooks/use-performance-monitor";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import CountUpInit from "./components/CountUpInit";
 import { Component, ErrorInfo, ReactNode } from "react";
 
 const queryClient = new QueryClient();
@@ -57,6 +58,7 @@ const App = () => {
         <TooltipProvider>
           <Toaster />
           <Sonner />
+          <CountUpInit />
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />

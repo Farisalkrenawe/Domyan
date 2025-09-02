@@ -255,33 +255,76 @@
   /* WhatsApp Button Glow */
   .whatsapp-glow {
     box-shadow: 
-      0 0 20px hsl(var(--accent) / 0.2),
-      0 0 40px hsl(var(--accent) / 0.1),
-      inset 0 0 0 1px hsl(var(--accent) / 0.15);
-    animation: whatsapp-elegant-glow 6s ease-in-out infinite;
-    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      0 0 25px #25D366 / 0.4,
+      0 0 50px #25D366 / 0.2,
+      0 0 75px #25D366 / 0.1,
+      inset 0 0 0 2px #25D366 / 0.3;
+    animation: whatsapp-elegant-glow 4s ease-in-out infinite, whatsapp-pulse 2s ease-in-out infinite;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .whatsapp-glow::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, #25D366 / 0.1, transparent 70%);
+    animation: whatsapp-ripple 3s linear infinite;
+    pointer-events: none;
   }
 
   .whatsapp-glow:hover {
     box-shadow: 
-      0 0 35px hsl(var(--accent) / 0.4),
-      0 0 70px hsl(var(--accent) / 0.2),
-      inset 0 0 0 1px hsl(var(--accent) / 0.3);
-    transform: scale(1.05);
+      0 0 40px #25D366 / 0.6,
+      0 0 80px #25D366 / 0.4,
+      0 0 120px #25D366 / 0.2,
+      inset 0 0 0 3px #25D366 / 0.5;
+    transform: scale(1.1) rotate(5deg);
+    animation-play-state: paused;
+  }
+
+  .whatsapp-glow:hover::before {
+    animation-play-state: paused;
   }
 
   @keyframes whatsapp-elegant-glow {
     0%, 100% { 
       box-shadow: 
-        0 0 20px hsl(var(--accent) / 0.2),
-        0 0 40px hsl(var(--accent) / 0.1),
-        inset 0 0 0 1px hsl(var(--accent) / 0.15);
+        0 0 25px #25D366 / 0.4,
+        0 0 50px #25D366 / 0.2,
+        0 0 75px #25D366 / 0.1,
+        inset 0 0 0 2px #25D366 / 0.3;
     }
     50% { 
       box-shadow: 
-        0 0 30px hsl(var(--accent) / 0.3),
-        0 0 60px hsl(var(--accent) / 0.15),
-        inset 0 0 0 1px hsl(var(--accent) / 0.25);
+        0 0 35px #25D366 / 0.5,
+        0 0 70px #25D366 / 0.3,
+        0 0 105px #25D366 / 0.15,
+        inset 0 0 0 2px #25D366 / 0.4;
+    }
+  }
+
+  @keyframes whatsapp-pulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.02);
+    }
+  }
+
+  @keyframes whatsapp-ripple {
+    0% {
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0;
     }
   }
   
@@ -373,6 +416,16 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
     cursor: pointer;
+  }
+
+  /* Green Gradient Border - Same colors as text-green-gradient */
+  .border-green-gradient {
+    border-image: linear-gradient(135deg, #10b981, #059669, #047857) 1;
+    border-style: solid;
+  }
+
+  .border-green-gradient:hover {
+    border-image: linear-gradient(135deg, #34d399, #10b981, #059669) 1;
   }
   
   /* Golden Gradient Border */

@@ -1,16 +1,17 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star, Phone, Mail, MapPin, Menu, X, Globe, MessageCircle, Home, User, Briefcase, Award, MessageSquare, Contact, Facebook, Instagram, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Star, Phone, Mail, MapPin, Menu, X, Globe, Home, Facebook, Instagram, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import OptimizedCursor from '@/components/ui/optimized-cursor';
-import OptimizedCarousel from '@/components/ui/optimized-carousel';
 import LazyImage from '@/components/ui/lazy-image';
-import { AnimatedCounter } from '@/components/ui/animated-counter';
+import { ImageCarousel } from '@/components/ui/image-carousel';
+
 import { usePerformance } from '@/hooks/use-performance';
 import villaHeroImage from '@/assets/villa-hero.jpg';
+import architectPortrait from '@/assets/cb9503b7-96dd-4f45-a014-0cd620f5d801.png';
 const Index = () => {
   const { isMobile, animationDuration, enableHeavyAnimations } = usePerformance();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -35,64 +36,93 @@ const Index = () => {
     }
   }, [isMobile, animationDuration, enableHeavyAnimations]);
 
-  // Luxury villa images for carousel
-  const heroImages = ["/lovable-uploads/8d20c9fc-1ad5-4977-9593-a5406c9a6dbe.png", villaHeroImage, "/lovable-uploads/ea31bec1-6264-4ecf-969f-9f025c1b1c9f.png", "/lovable-uploads/3dc1f974-3c56-4e09-927a-0f943fe91d12.png", "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"];
+  // Luxury villa images for carousel - Desktop optimized (landscape/horizontal)
+  const desktopHeroImages = [
+    "/desktop-images/desktop-hero-1.png", 
+    "/desktop-images/desktop-hero-2.jpg", 
+    "/desktop-images/desktop-hero-3.png", 
+    "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+  ];
+
+  // Mobile optimized images (portrait/vertical or square)
+  const mobileHeroImages = [
+    "/mobile-images/mobile-hero-1.jpg", // Portrait villa image
+    "/mobile-images/mobile-hero-2.jpg", // Another portrait villa image
+    "/mobile-images/mobile-hero-3.jpg", // Portrait villa image
+    "/mobile-images/mobile-hero-4.jpg"  // Portrait villa image
+  ];
+
+  // Select appropriate images based on device type
+  const heroImages = isMobile ? mobileHeroImages : desktopHeroImages;
 
   // Portfolio projects
   const projects = [{
-    name: "Majesty Villa",
+    name: "Luxury Villa with Middle Eastern Design",
     location: "Rahat, Israel", 
     year: "2024",
-    image: "/lovable-uploads/cb36632a-5b93-4104-8208-53cae284750e.png",
-    description: "Contemporary luxury villa featuring stunning archway design, multi-level terraces, and sophisticated modern Islamic architectural elements."
+    images: [
+      "/1/IMG_0109.jpg",
+      "/1/IMG_0110.jpg",
+      "/1/IMG_0111.JPG",
+      "/1/IMG_0113.jpg"
+    ],
+    mainImage: "/1/IMG_0110.jpg",
+    description: "Contemporary luxury villa featuring stunning archway design, multi-level terraces, and sophisticated modern Islamic architectural elements with intricate geometric patterns."
   }, {
-    name: "Aurora Heights Villa",
+    name: "Modern Contemporary Villa with Wood Accents",
     location: "Rahat, Israel",
     year: "2024",
-    image: "/lovable-uploads/c096be96-831b-49dc-9749-ed9936aa3dd7.png",
-    description: "Multi-story luxury residence with contemporary Islamic architecture, featuring elegant arched entrance and sophisticated tiered balconies."
+    images: [
+      "/2/9a334caa-a025-404f-b9f1-2f072f885ed4.jpg",
+      "/2/6d8636c6-040d-4c9b-a18a-72900fffd165.jpg",
+      "/2/f5af2ae7-6f42-4532-a67d-f100cb67087d.jpg"
+    ],
+    mainImage: "/2/9a334caa-a025-404f-b9f1-2f072f885ed4.jpg",
+    description: "Ultra-modern luxury villa featuring distinctive circular windows, sophisticated wood and stone cladding, and contemporary architectural design with integrated outdoor living spaces."
   }, {
-    name: "Celestial Manor",
+    name: "Modern Villa with Panoramic Views",
     location: "Rahat, Israel",
     year: "2024",
-    image: "/lovable-uploads/1a020df0-aba7-4519-8cec-73d3d139ccd6.png",
-    description: "Spectacular villa design featuring distinctive curved archways, modern Islamic architecture, and luxurious multi-level living spaces with panoramic views."
+    images: [
+      "/3/מבט א.jpg",
+      "/3/מבט ב.jpg",
+      "/3/מבט ג.jpg"
+    ],
+    mainImage: "/3/מבט א.jpg",
+    description: "Contemporary villa featuring stunning panoramic views, modern architectural design with clean lines, and sophisticated outdoor living spaces."
   }, {
-    name: "Grand Palacio Residence",
+    name: "Luxury Villa with Video Showcase",
     location: "Rahat, Israel",
     year: "2024",
-    image: "/lovable-uploads/557f6c78-e2b3-49f7-8aed-f26fcb8ad483.png",
-    description: "Majestic villa showcasing timeless classical architecture with ornate ironwork gates and symmetrical design elements."
+    images: [
+      "/4/IMG_0530.JPG",
+      "/4/EEF65AC9-F3A7-42B9-B241-16B02C7E737D.JPG",
+      "/4/IMG_0527.jpg",
+      "/4/IMG_0531.JPG"
+    ],
+    mainImage: "/4/IMG_0530.JPG",
+    description: "Exquisite luxury villa featuring premium materials, sophisticated design elements, and comprehensive visual documentation including video showcase."
   }, {
-    name: "Metropolitan Heights",
+    name: "Lahavim Villa - Evening Views",
+    location: "Lahavim, Israel",
+    year: "2024",
+    images: [
+      "/5/וילה להבים - מבט א עם לוגו- ערב.jpg",
+      "/5/וילה להבים - מבט ב עם לוגו- ערב.jpg",
+      "/5/וילה להבים - מבט ג עם לוגו- ערב.jpg"
+    ],
+    mainImage: "/5/וילה להבים - מבט ב עם לוגו- ערב.jpg",
+    description: "Stunning villa in Lahavim featuring elegant evening lighting, sophisticated architectural design, and premium luxury finishes."
+  }, {
+    name: "Contemporary Villa with Modern Aesthetics",
     location: "Rahat, Israel",
     year: "2024",
-    image: "/lovable-uploads/925b8ff8-9907-4622-92dd-b6ccbdf1a7b4.png",
-    description: "Contemporary multi-level residence featuring clean geometric lines, expansive balconies, and sophisticated urban design."
-  }, {
-    name: "Azure Paradise Villa",
-    location: "Rahat, Israel",
-    year: "2024",
-    image: "/lovable-uploads/1a758107-73eb-49ec-87bd-ee3226959bd2.png",
-    description: "Modern tropical sanctuary with minimalist design, floor-to-ceiling glass walls, and an infinity pool oasis."
-  }, {
-    name: "Desert Stone Manor",
-    location: "Rahat, Israel",
-    year: "2024",
-    image: "/lovable-uploads/e44383fb-ba30-44bb-9ed9-07941d57ad44.png",
-    description: "Rustic elegance embodied in natural stone construction with contemporary accents and terraced landscaping."
-  }, {
-    name: "Harmony Residence",
-    location: "Rahat, Israel",
-    year: "2024",
-    image: "/lovable-uploads/0b30eb2c-fb15-4fd3-972a-08d6a250884b.png",
-    description: "Balanced blend of traditional stone work and modern architectural elements creating a timeless family sanctuary."
-  }, {
-    name: "Platinum Modern Estate",
-    location: "Rahat, Israel",
-    year: "2024",
-    image: "/lovable-uploads/b57bae22-2e9a-45c6-b6dc-1fc9e5cbc6cf.png",
-    description: "Ultra-modern luxury villa featuring pristine white facades, geometric design principles, and premium finishing materials."
+    images: [
+      "/6/IMG_4938.jpg",
+      "/6/IMG_4939.jpg"
+    ],
+    mainImage: "/6/IMG_4938.jpg",
+    description: "Modern contemporary villa showcasing clean architectural lines, sophisticated design elements, and premium materials for discerning clients."
   }];
 
   // Testimonials
@@ -112,11 +142,11 @@ const Index = () => {
   const translations = {
     en: {
       direction: 'ltr',
-      nav: ['HOME', 'ABOUT', 'PORTFOLIO', 'SERVICES', 'TESTIMONIALS', 'CONTACT'],
+      nav: ['HOME', 'ABOUT', 'OUR WORK', 'SERVICES', 'TESTIMONIALS', 'CONTACT'],
       heroTitle: 'CRAFTING ARCHITECTURAL MASTERPIECES',
       heroSubtitle: 'Where Luxury Meets Innovation',
       discoverPortfolio: 'Discover Our Portfolio',
-      scheduleConsultation: 'Schedule Consultation',
+      scheduleConsultation: 'Schedule Free Consultation',
       aboutTitle: 'Architectural Excellence Redefined',
       aboutText: "At Domyan, we don't just design buildings; we craft living masterpieces that harmonize luxury, functionality, and timeless elegance. With over two decades of experience in creating bespoke architectural solutions, we transform dreams into iconic structures.",
       portfolioTitle: 'Featured Projects',
@@ -138,52 +168,74 @@ const Index = () => {
       officeLabel: 'Office',
       interactiveMap: 'Interactive Map',
       footerDescription: 'Crafting architectural masterpieces where luxury meets innovation. Transforming dreams into iconic structures for over two decades.',
-      footerFinalCopyright: 'Crafted with excellence by Domyan © 2024. All rights reserved.',
+      footerFinalCopyright: 'Crafted with excellence by Faris Alkrinawi © 2024. All rights reserved.',
       projects: [{
-        name: "Grand Palacio Residence",
+        name: "Luxury Villa with Middle Eastern Design",
         location: "Rahat, Israel",
         year: "2024",
-        description: "Majestic villa showcasing timeless classical architecture with ornate ironwork gates and symmetrical design elements."
+        images: [
+          "/1/IMG_0109.jpg",
+          "/1/IMG_0110.jpg",
+          "/1/IMG_0111.JPG",
+          "/1/IMG_0113.jpg"
+        ],
+        mainImage: "/1/IMG_0110.jpg",
+        description: "Contemporary luxury villa featuring stunning archway design, multi-level terraces, and sophisticated modern Islamic architectural elements with intricate geometric patterns."
       }, {
-        name: "Celestial Manor",
+        name: "Modern Contemporary Villa with Wood Accents",
         location: "Rahat, Israel",
         year: "2024",
-        description: "Spectacular villa design featuring distinctive curved archways, modern Islamic architecture, and luxurious multi-level living spaces with panoramic views."
+        images: [
+          "/2/9a334caa-a025-404f-b9f1-2f072f885ed4.jpg",
+          "/2/6d8636c6-040d-4c9b-a18a-72900fffd165.jpg",
+          "/2/f5af2ae7-6f42-4532-a67d-f100cb67087d.jpg"
+        ],
+        mainImage: "/2/9a334caa-a025-404f-b9f1-2f072f885ed4.jpg",
+        description: "Ultra-modern luxury villa featuring distinctive circular windows, sophisticated wood and stone cladding, and contemporary architectural design with integrated outdoor living spaces."
       }, {
-        name: "Aurora Heights Villa",
+        name: "Modern Villa with Panoramic Views",
         location: "Rahat, Israel",
         year: "2024",
-        description: "Multi-story luxury residence with contemporary Islamic architecture, featuring elegant arched entrance and sophisticated tiered balconies."
+        images: [
+          "/3/מבט א.jpg",
+          "/3/מבט ב.jpg",
+          "/3/מבט ג.jpg"
+        ],
+        mainImage: "/3/מבט א.jpg",
+        description: "Contemporary villa featuring stunning panoramic views, modern architectural design with clean lines, and sophisticated outdoor living spaces."
       }, {
-        name: "Majesty Villa",
-        location: "Rahat, Israel",
-        year: "2024", 
-        description: "Contemporary luxury villa featuring stunning archway design, multi-level terraces, and sophisticated modern Islamic architectural elements."
-      }, {
-        name: "Metropolitan Heights",
-        location: "Rahat, Israel",
-        year: "2024",
-        description: "Contemporary multi-level residence featuring clean geometric lines, expansive balconies, and sophisticated urban design."
-      }, {
-        name: "Azure Paradise Villa",
+        name: "Luxury Villa with Video Showcase",
         location: "Rahat, Israel",
         year: "2024",
-        description: "Modern tropical sanctuary with minimalist design, floor-to-ceiling glass walls, and an infinity pool oasis."
+        images: [
+          "/4/IMG_0530.JPG",
+          "/4/EEF65AC9-F3A7-42B9-B241-16B02C7E737D.JPG",
+          "/4/IMG_0527.jpg",
+          "/4/IMG_0531.JPG"
+        ],
+        mainImage: "/4/IMG_0530.JPG",
+        description: "Exquisite luxury villa featuring premium materials, sophisticated design elements, and comprehensive visual documentation including video showcase."
       }, {
-        name: "Desert Stone Manor",
+        name: "Lahavim Villa - Evening Views",
+        location: "Lahavim, Israel",
+        year: "2024",
+        images: [
+          "/5/וילה להבים - מבט א עם לוגו- ערב.jpg",
+          "/5/וילה להבים - מבט ב עם לוגו- ערב.jpg",
+          "/5/וילה להבים - מבט ג עם לוגו- ערב.jpg"
+        ],
+        mainImage: "/5/וילה להבים - מבט ב עם לוגו- ערב.jpg",
+        description: "Stunning villa in Lahavim featuring elegant evening lighting, sophisticated architectural design, and premium luxury finishes."
+      }, {
+        name: "Contemporary Villa with Modern Aesthetics",
         location: "Rahat, Israel",
         year: "2024",
-        description: "Rustic elegance embodied in natural stone construction with contemporary accents and terraced landscaping."
-      }, {
-        name: "Harmony Residence",
-        location: "Rahat, Israel",
-        year: "2024",
-        description: "Balanced blend of traditional stone work and modern architectural elements creating a timeless family sanctuary."
-      }, {
-        name: "Platinum Modern Estate",
-        location: "Rahat, Israel",
-        year: "2024",
-        description: "Ultra-modern luxury villa featuring pristine white facades, geometric design principles, and premium finishing materials."
+        images: [
+          "/6/IMG_4938.jpg",
+          "/6/IMG_4939.jpg"
+        ],
+        mainImage: "/6/IMG_4938.jpg",
+        description: "Modern contemporary villa showcasing clean architectural lines, sophisticated design elements, and premium materials for discerning clients."
       }],
       testimonials: [{
         quote: "Domyan transformed our vision into a breathtaking reality. Their attention to detail and commitment to excellence is unmatched.",
@@ -224,11 +276,11 @@ const Index = () => {
     },
     he: {
       direction: 'rtl',
-      nav: ['בית', 'אודות', 'פורטפוליו', 'שירותים', 'המלצות', 'צור קשר'],
+      nav: ['בית', 'אודות', 'העבודות שלנו', 'שירותים', 'המלצות', 'צור קשר'],
       heroTitle: 'יוצרים יצירות מופת אדריכליות',
       heroSubtitle: 'איכות היוקרה פוגשת חדשנות',
       discoverPortfolio: 'גלה את הפורטפוליו שלנו',
-      scheduleConsultation: 'קבע פגישת ייעוץ',
+      scheduleConsultation: 'קבע פגישת ייעוץ בחינם',
       aboutTitle: 'מצוינות אדריכלית מחדש',
       aboutText: "בדומיאן, אנחנו לא רק מעצבים בניינים; אנחנו יוצרים יצירות מופת חיות המשלבות יוקרה, פונקציונליות ואלגנטיות נצחית. עם למעלה משני עשורים של ניסיון ביצירת פתרונות אדריכליים מותאמים אישית, אנחנו הופכים חלומות למבנים איקוניים.",
       portfolioTitle: 'פרויקטים נבחרים',
@@ -243,49 +295,81 @@ const Index = () => {
       footerServices: 'שירותים',
       footerContact: 'צור קשר',
       footerQuickLinks: 'קישורים מהירים',
-      footerCopyright: '2024 דומיאן אדריכלות. כל הזכויות שמורות.',
+      footerCopyright: '2025 דומיאן אדריכלות. כל הזכויות שמורות.',
       getInTouch: 'צור קשר',
       phoneLabel: 'טלפון',
       emailLabel: 'אימייל',
       officeLabel: 'משרד',
       interactiveMap: 'מפה אינטראקטיבית',
       footerDescription: 'יוצרים יצירות מופת אדריכליות שבהן יוקרה פוגשת חדשנות. הופכים חלומות למבנים איקוניים למעלה משני עשורים.',
-      footerFinalCopyright: 'נוצר במצוינות על ידי דומיאן © 2024. כל הזכויות שמורות.',
+      footerFinalCopyright: 'נוצר במצוינות על ידי פארס אלקרינאוי © 2025. כל הזכויות שמורות.',
       projects: [{
-        name: "אחוזת המורשת המלכותית",
+        name: "וילת יוקרה עם עיצוב מזרח תיכוני",
         location: "רהט, ישראל",
-        year: "2024",
-        description: "אלגנטיות קלאסית פוגשת יוקרה מודרנית באחוזה מרהיבה זו הכוללת עמודים ניאו-קלאסיים ופרטים אדריכליים מעודנים."
+        year: "2025",
+        images: [
+          "/1/IMG_0109.jpg",
+          "/1/IMG_0110.jpg",
+          "/1/IMG_0111.JPG",
+          "/1/IMG_0113.jpg"
+        ],
+        mainImage: "/1/IMG_0110.jpg",
+        description: "וילת יוקרה עכשווית הכוללת עיצוב קשת מרהיב, מרפסות רב-קומתיות ואלמנטים אדריכליים מודרניים מתוחכמים עם דגמים גיאומטריים מורכבים."
       }, {
-        name: "מעון פלסיו הגדול",
+        name: "וילה עכשווית מודרנית עם אקצנטים מעץ",
         location: "רהט, ישראל",
-        year: "2024",
-        description: "וילה מלכותית המציגה אדריכלות קלאסית נצחית עם שערי ברזל מעוטרים ואלמנטי עיצוב סימטריים."
+        year: "2025",
+        images: [
+          "/2/9a334caa-a025-404f-b9f1-2f072f885ed4.jpg",
+          "/2/6d8636c6-040d-4c9b-a18a-72900fffd165.jpg",
+          "/2/f5af2ae7-6f42-4532-a67d-f100cb67087d.jpg"
+        ],
+        mainImage: "/2/9a334caa-a025-404f-b9f1-2f072f885ed4.jpg",
+        description: "וילת יוקרה אולטרה-מודרנית הכוללת חלונות עגולים ייחודיים, ציפוי עץ ואבן מתוחכם ועיצוב אדריכלי עכשווי עם חללי מגורים חיצוניים משולבים."
       }, {
-        name: "רמות מטרופוליטן",
+        name: "וילה מודרנית עם נוף פנורמי",
         location: "רהט, ישראל",
         year: "2024",
-        description: "מקר ץמה מעכשווי רב-קומתי הכולל קווים גיאומטריים נקיים, מרפסות נרחבות ועיצוב עירוני מתוחכם."
+        images: [
+          "/3/מבט א.jpg",
+          "/3/מבט ב.jpg",
+          "/3/מבט ג.jpg"
+        ],
+        mainImage: "/3/מבט א.jpg",
+        description: "וילה עכשווית הכוללת נוף פנורמי מרהיב, עיצוב אדריכלי מודרני עם קווים נקיים וחללי מגורים חיצוניים מתוחכמים."
       }, {
-        name: "וילת גן עדן תכלת",
+        name: "וילת יוקרה עם הצגת וידאו",
         location: "רהט, ישראל",
         year: "2024",
-        description: "מקדש טרופי מודרני עם עיצוב מינימליסטי, קירות זכוכית מהרצפה לתקרה ונווה מדבר בריכת אינסוף."
+        images: [
+          "/4/IMG_0530.JPG",
+          "/4/EEF65AC9-F3A7-42B9-B241-16B02C7E737D.JPG",
+          "/4/IMG_0527.jpg",
+          "/4/IMG_0531.JPG"
+        ],
+        mainImage: "/4/IMG_0530.JPG",
+        description: "וילת יוקרה מעודנת הכוללת חומרים יוקרתיים, אלמנטי עיצוב מתוחכמים ותיעוד חזותי מקיף כולל הצגת וידאו."
       }, {
-        name: "אחוזת אבן המדבר",
-        location: "רהט, ישראל",
+        name: "וילה להבים - מבטים ערביים",
+        location: "להבים, ישראל",
         year: "2024",
-        description: "אלגנטיות כפרית המגולמת בבנייה מאבן טבעית עם אקצנטים עכשוויים ונוף מדורג."
+        images: [
+          "/5/וילה להבים - מבט א עם לוגו- ערב.jpg",
+          "/5/וילה להבים - מבט ב עם לוגו- ערב.jpg",
+          "/5/וילה להבים - מבט ג עם לוגו- ערב.jpg"
+        ],
+        mainImage: "/5/וילה להבים - מבט ב עם לוגו- ערב.jpg",
+        description: "וילה מרהיבה בלהבים הכוללת תאורה ערבית אלגנטית, עיצוב אדריכלי מתוחכם וגימורים יוקרתיים."
       }, {
-        name: "מעון ההרמוניה",
+        name: "וילה עכשווית עם אסתטיקה מודרנית",
         location: "רהט, ישראל",
         year: "2024",
-        description: "שילוב מאוזן של עבודת אבן מסורתית ואלמנטים אדריכליים מודרניים היוצרים מקדש משפחתי נצחי."
-      }, {
-        name: "אחוזת פלטינום מודרנית",
-        location: "רהט, ישראל",
-        year: "2024",
-        description: "וילת יוקרה אולטרה-מודרנית הכוללת חזיתות לבנות טהורות, עקרונות עיצוב גיאומטריים וחומרי גימור פרימיום."
+        images: [
+          "/6/IMG_4938.jpg",
+          "/6/IMG_4939.jpg"
+        ],
+        mainImage: "/6/IMG_4938.jpg",
+        description: "וילה עכשווית מודרנית המציגה קווים אדריכליים נקיים, אלמנטי עיצוב מתוחכמים וחומרים יוקרתיים ללקוחות תובעניים."
       }],
       testimonials: [{
         quote: "דומיאן הפך את החזון שלנו למציאות עוצרת נשימה. תשומת הלב לפרטים והמחויבות למצוינות שלהם ללא תחרות.",
@@ -326,11 +410,11 @@ const Index = () => {
     },
     ar: {
       direction: 'rtl',
-      nav: ['الرئيسية', 'عن', 'المحفظة', 'الخدمات', 'الشهادات', 'اتصل'],
+      nav: ['الرئيسية', 'عن', 'أعمالنا', 'الخدمات', 'الشهادات', 'اتصل'],
       heroTitle: 'صناعة التحف المعمارية',
       heroSubtitle: 'حيث تلتقي الفخامة بالابتكار',
       discoverPortfolio: 'اكتشف محفظتنا',
-      scheduleConsultation: 'حدد موعد استشارة',
+      scheduleConsultation: 'حدد موعد استشارة مجاناً',
       aboutTitle: 'إعادة تعريف التميز المعماري',
       aboutText: "في دوميان، نحن لا نصمم المباني فقط؛ نصنع تحفاً حية تجمع بين الفخامة والوظائف والأناقة الخالدة. مع أكثر من عقدين من الخبرة في إنشاء حلول معمارية مخصصة، نحول الأحلام إلى هياكل أيقونية.",
       portfolioTitle: 'المشاريع المميزة',
@@ -352,45 +436,22 @@ const Index = () => {
       officeLabel: 'المكتب',
       interactiveMap: 'خريطة تفاعلية',
       footerDescription: 'صناعة التحف المعمارية حيث تلتقي الفخامة بالابتكار. تحويل الأحلام إلى هياكل أيقونية لأكثر من عقدين.',
-      footerFinalCopyright: 'صُنع بامتياز بواسطة دوميان © 2024. جميع الحقوق محفوظة.',
+      footerFinalCopyright: 'صُنع بامتياز بواسطة فارس القريناوي © 2024. جميع الحقوق محفوظة.',
       projects: [{
-        name: "عقار التراث الملكي",
+        name: "فيلا فاخرة بتصميم شرق أوسطي",
         location: "رهط، إسرائيل",
         year: "2024",
-        description: "الأناقة الكلاسيكية تلتقي بالفخامة الحديثة في هذا العقار الرائع الذي يتميز بأعمدة نيوكلاسيكية وتفاصيل معمارية راقية."
-      }, {
-        name: "مقر بالاسيو الكبير",
-        location: "رهط، إسرائيل",
-        year: "2024",
-        description: "فيلا مهيبة تعرض العمارة الكلاسيكية الخالدة مع بوابات حديدية مزخرفة وعناصر تصميم متماثلة."
-      }, {
-        name: "مرتفعات متروبوليتان",
-        location: "رهط، إسرائيل",
-        year: "2024",
-        description: "مقر إقامة معاصر متعدد المستويات يتميز بخطوط هندسية نظيفة وشرفات واسعة وتصميم حضري متطور."
-      }, {
-        name: "فيلا جنة أزور",
-        location: "رهط، إسرائيل",
-        year: "2024",
-        description: "ملاذ استوائي حديث بتصميم بسيط وجدران زجاجية من الأرض للسقف وواحة بركة لا نهائية."
-      }, {
-        name: "قصر حجر الصحراء",
-        location: "رهط، إسرائيل",
-        year: "2024",
-        description: "الأناقة الريفية المجسدة في البناء بالحجر الطبيعي مع لمسات عصرية ومناظر طبيعية متدرجة."
-      }, {
-        name: "مقر الانسجام",
-        location: "رهط، إسرائيل",
-        year: "2024",
-        description: "مزيج متوازن من أعمال الحجر التقليدية والعناصر المعمارية الحديثة لخلق ملاذ عائلي خالد."
-      }, {
-        name: "عقار بلاتينيوم الحديث",
-        location: "رهط، إسرائيل",
-        year: "2024",
-        description: "فيلا فاخرة فائقة الحداثة تتميز بواجهات بيضاء نقية ومبادئ تصميم هندسية ومواد تشطيب فاخرة."
+        images: [
+          "/1/IMG_0109.jpg",
+          "/1/IMG_0110.jpg",
+          "/1/IMG_0111.JPG",
+          "/1/IMG_0113.jpg"
+        ],
+        mainImage: "/1/IMG_0109.jpg",
+        description: "فيلا فاخرة معاصرة تتميز بتصميم قوس مذهל وشرفات متعددة الطوابق وعناصر معمارية حديثة متطورة مع أنماط هندسية معقدة."
       }],
       testimonials: [{
-        quote: "حولت دوميان رؤיتنا إلى واقع خلاب. اهتمامهم بالتفاصيل والالتزام بالتميز لا مثيل له.",
+        quote: "حولت دوميان رؤيتنا إلى واقع خلاب. اهتمامهم بالتفاصيل والالتزام بالتميز لا مثيل له.",
         author: "سارة ميتشل",
         project: "مالكة فيلا، بيفرلي هيلز"
       }, {
@@ -431,12 +492,18 @@ const Index = () => {
   const t = useMemo(() => translations[language as keyof typeof translations], [language]);
 
   // Memoize hero images to prevent unnecessary re-renders
-  const memoizedHeroImages = useMemo(() => heroImages, []);
+  const memoizedHeroImages = useMemo(() => heroImages, [heroImages, isMobile]);
   
   // Carousel state for smooth transitions
   const [currentSlide, setCurrentSlide] = useState(0);
   const [slideProgress, setSlideProgress] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+
+  // Reset carousel when switching between mobile and desktop images
+  useEffect(() => {
+    setCurrentSlide(0);
+    setSlideProgress(0);
+  }, [isMobile]);
   
   // Carousel navigation functions
   const nextSlide = useCallback(() => {
@@ -542,7 +609,7 @@ const Index = () => {
       
       // Reset success message after 5 seconds
       setTimeout(() => setSubmitStatus('idle'), 5000);
-    } catch (error) {
+    } catch {
       setSubmitStatus('error');
       
       // Reset error message after 5 seconds
@@ -577,12 +644,12 @@ const Index = () => {
             {/* Logo */}
             <div 
               className="text-2xl font-serif font-bold text-green-gradient cursor-pointer"
-              onClick={() => document.getElementById('hero')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => document.getElementById('main-content')?.scrollIntoView({ behavior: 'smooth' })}
               role="button"
               tabIndex={0}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
-                  document.getElementById('hero')?.scrollIntoView({ behavior: 'smooth' });
+                  document.getElementById('main-content')?.scrollIntoView({ behavior: 'smooth' });
                 }
               }}
               aria-label="Go to top of page"
@@ -592,10 +659,16 @@ const Index = () => {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8 rtl:space-x-reverse rtl:space-x-8">
-              {t.nav.map((item, index) => <a key={index} href={`#section-${index}`} className="text-foreground hover:text-green-600 transition-all duration-300 relative group">
+              {t.nav.map((item, index) => (
+                <a 
+                  key={index} 
+                  href={index === 0 ? '#main-content' : `#section-${index}`} 
+                  className="text-foreground hover:text-green-600 transition-all duration-300 relative group"
+                >
                   {item}
                   <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-green-600 transition-all duration-300 group-hover:w-full"></span>
-                </a>)}
+                </a>
+              ))}
             </div>
 
             {/* Language Selector & Mobile Menu */}
@@ -640,9 +713,16 @@ const Index = () => {
           height: 0
         }} className="md:hidden glass">
               <div className="container mx-auto px-6 py-4 space-y-4">
-                {t.nav.map((item, index) => <a key={index} href={`#section-${index}`} className="block text-foreground hover:text-green-600 transition-colors" onClick={() => setIsMenuOpen(false)}>
+                {t.nav.map((item, index) => (
+                  <a 
+                    key={index} 
+                    href={index === 0 ? '#main-content' : `#section-${index}`} 
+                    className="block text-foreground hover:text-green-600 transition-colors" 
+                    onClick={() => setIsMenuOpen(false)}
+                  >
                     {item}
-                  </a>)}
+                  </a>
+                ))}
               </div>
             </motion.div>}
         </AnimatePresence>
@@ -736,7 +816,7 @@ const Index = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: animationDuration, delay: 0.5 }}
-              className="text-5xl md:text-7xl font-serif font-bold text-white mb-6"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-serif font-bold text-white mb-6"
               style={{ textShadow: '0 0 30px rgba(212, 175, 55, 0.5)' }}
             >
               {t.heroTitle}
@@ -745,7 +825,7 @@ const Index = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: animationDuration, delay: 0.7 }}
-              className="text-xl md:text-2xl text-white/90 mb-12 font-light"
+              className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 mb-12 font-light"
             >
               {t.heroSubtitle}
             </motion.p>
@@ -755,13 +835,7 @@ const Index = () => {
               transition={{ duration: animationDuration, delay: 0.9 }}
               className="flex flex-col sm:flex-row gap-6 justify-center"
             >
-              <Button 
-                className="btn-luxury-filled magnetic"
-                onClick={() => document.getElementById('section-2')?.scrollIntoView({ behavior: 'smooth' })}
-              >
-                {t.discoverPortfolio}
-              </Button>
-              <Button className="btn-luxury magnetic">
+              <Button className="btn-luxury magnetic text-lg px-8 py-4 h-auto min-h-[60px]">
                 {t.scheduleConsultation}
               </Button>
             </motion.div>
@@ -795,53 +869,25 @@ const Index = () => {
               >
                 <div className="text-center">
                   <div className="text-3xl font-bold text-deep-green">
-                    <AnimatedCounter 
-                      end={50} 
-                      start={0}
-                      suffix="+" 
-                      duration={3000}
-                      delay={200}
-                      enabled={enableHeavyAnimations}
-                    />
+                    <span data-countup data-end="50" data-suffix="+" data-duration="3000"></span>
                   </div>
                   <div className="text-sm text-muted-foreground">{t.stats.projects}</div>
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-deep-green">
-                    <AnimatedCounter 
-                      end={12} 
-                      start={0}
-                      duration={2500}
-                      delay={400}
-                      enabled={enableHeavyAnimations}
-                    />
+                    <span data-countup data-end="12" data-duration="3000"></span>
                   </div>
                   <div className="text-sm text-muted-foreground">{t.stats.years}</div>
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-deep-green">
-                    <AnimatedCounter 
-                      end={1} 
-                      start={0}
-                      prefix="A" 
-                      suffix="+" 
-                      duration={2000}
-                      delay={600}
-                      enabled={enableHeavyAnimations}
-                    />
+                    <span>A+</span>
                   </div>
                   <div className="text-sm text-muted-foreground">{t.stats.awards}</div>
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-deep-green">
-                    <AnimatedCounter 
-                      end={100} 
-                      start={0}
-                      suffix="%" 
-                      duration={3500}
-                      delay={800}
-                      enabled={enableHeavyAnimations}
-                    />
+                    <span data-countup data-end="100" data-suffix="%" data-duration="3000"></span>
                   </div>
                   <div className="text-sm text-muted-foreground">{t.stats.clients}</div>
                 </div>
@@ -854,8 +900,27 @@ const Index = () => {
               transition={{ duration: animationDuration }}
               className="relative"
             >
-              <img src="/lovable-uploads/cb9503b7-96dd-4f45-a014-0cd620f5d801.png" alt="Domyan Architect - Professional Portrait" className="w-full h-96 object-cover rounded-lg shadow-luxury border-gold-gradient" />
-              <div className="absolute inset-0 bg-gradient-to-br from-accent/20 to-transparent rounded-lg"></div>
+              {/* Elegant Frame Container */}
+              <div className="relative p-6 bg-green-800 rounded-2xl shadow-2xl border-4 border-amber-400">
+                {/* Inner Frame */}
+                <div className="relative p-4 bg-white rounded-xl shadow-inner border-2 border-green-gradient">
+                  {/* Image with Enhanced Styling */}
+                  <img 
+                    src={architectPortrait} 
+                    alt="Domyan Architect - Professional Portrait" 
+                    className="w-full h-96 object-cover rounded-lg shadow-luxury" 
+                  />
+                  
+                  {/* Subtle Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-accent/10 to-transparent rounded-lg"></div>
+                  
+                  {/* Decorative Corner Elements */}
+                  <div className="absolute top-2 left-2 w-4 h-4 border-l-2 border-t-2 border-green-gradient rounded-tl-lg"></div>
+                  <div className="absolute top-2 right-2 w-4 h-4 border-r-2 border-t-2 border-green-gradient rounded-tr-lg"></div>
+                  <div className="absolute bottom-2 left-2 w-4 h-4 border-l-2 border-b-2 border-green-gradient rounded-bl-lg"></div>
+                  <div className="absolute bottom-2 right-2 w-4 h-4 border-r-2 border-b-2 border-green-gradient rounded-br-lg"></div>
+                </div>
+              </div>
               
               {/* CEO Name and Title */}
               <div className="mt-6 text-center space-y-1">
@@ -888,30 +953,98 @@ const Index = () => {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="space-y-16">
             {t.projects.map((project, index) => (
               <motion.div 
                 key={index} 
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: animationDuration, delay: index * 0.1 }}
+                transition={{ duration: animationDuration, delay: index * 0.2 }}
+                className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100"
               >
-                <Card className="luxury-card overflow-hidden group cursor-pointer">
-                  <div className="relative overflow-hidden">
-                    <LazyImage 
-                      src={memoizedProjects[index]?.image || "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"} 
-                      alt={project.name} 
-                      className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105" 
+                {/* Project Header */}
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 px-8 py-6 border-b border-gray-100">
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                      <h3 className="text-3xl font-serif font-bold text-gray-800 mb-2">
+                        {project.name}
+                      </h3>
+                      <div className="flex items-center gap-6 text-sm text-gray-600">
+                        <span className="flex items-center gap-2">
+                          <MapPin className="w-4 h-4 text-green-600" />
+                          {project.location}
+                        </span>
+                        <span className="flex items-center gap-2">
+                          <span className="w-2 h-2 bg-green-600 rounded-full"></span>
+                          {project.year}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <motion.div 
+                        initial={{ opacity: 0, scale: 0.8, y: -10 }}
+                        whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                        transition={{ 
+                          duration: 0.6, 
+                          delay: index * 0.1,
+                          type: "spring",
+                          stiffness: 100
+                        }}
+                        className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent mb-2"
+                      >
+                        Project #{index + 1}
+                      </motion.div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Project Content */}
+                <div className="grid lg:grid-cols-2 gap-0">
+                  {/* Image Carousel */}
+                  <div className="p-8">
+                    <ImageCarousel 
+                      images={project.images || [project.mainImage || ""]}
+                      projectName={project.name}
+                      className="w-full h-80 rounded-xl overflow-hidden shadow-lg"
                     />
                   </div>
-                  <CardContent className="p-6">
-                    <h3 className="text-xl font-semibold mb-2">{project.name}</h3>
-                    <p className="text-muted-foreground text-sm mb-4">{project.description}</p>
-                    <Button variant="ghost" className="text-green-600 hover:text-green-700 p-0">
-                      View Project →
-                    </Button>
-                  </CardContent>
-                </Card>
+
+                  {/* Project Details */}
+                  <div className="p-8 bg-gray-50 flex flex-col justify-center">
+                    <div className="space-y-6">
+                      <div>
+                        <h4 className="text-lg font-semibold text-gray-800 mb-3">Project Overview</h4>
+                        <p className="text-gray-600 leading-relaxed">
+                          {project.description}
+                        </p>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <h4 className="text-lg font-semibold text-gray-800">Key Features</h4>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                            Luxury Design
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                            Modern Architecture
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                            Premium Materials
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                            Custom Details
+                          </div>
+                        </div>
+                      </div>
+
+
+                    </div>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -1174,17 +1307,48 @@ const Index = () => {
                     <div>
                       <div className="font-medium">{t.officeLabel}</div>
                       <div className="text-muted-foreground">Rahat, Israel</div>
+                      <div className="flex flex-wrap gap-3 mt-2">
+                        <a 
+                          href="https://www.google.com/maps/place/%D7%93%D7%95%D7%9E%D7%99%D7%90%D7%9F+%D7%90%D7%93%D7%A8%D7%99%D7%9B%D7%9C%D7%95%D7%AA%E2%80%AD/@31.3804224,34.7369904,17z/data=!4m6!3m5!1s0x150262675d5d5663:0x6db9f5c5438d433c!8m2!3d31.3804224!4d34.7369904!16s%2Fg%2F11f4kv9nw7?entry=ttu&g_ep=EgoyMDI1MDgyNS4wIKXMDSoASAFQAw%3D%3D"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors cursor-pointer"
+                        >
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                          </svg>
+                          Google Maps
+                        </a>
+                        <a 
+                          href="https://waze.com/ul?ll=31.3804224,34.7369904&navigate=yes&q=%D7%93%D7%95%D7%9E%D7%99%D7%90%D7%9F%20%D7%90%D7%93%D7%A8%D7%99%D7%9B%D7%9C%D7%95%D7%AA"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 bg-[#33C1FF] hover:bg-[#2AA8E6] text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors cursor-pointer"
+                        >
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 7a1 1 0 11-2 0 1 1 0 012 0zm3.5 0a1 1 0 11-2 0 1 1 0 012 0zm-1.75 3.5c-1.5 0-2.5-.7-2.5-1.8h5c0 1.1-1 1.8-2.5 1.8z"/>
+                          </svg>
+                          בוויז : דומיאן אדריכלות
+                        </a>
+                      </div>
                     </div>
                   </div>
                 </div>
               </Card>
 
-              {/* Map Placeholder */}
-              <div className="h-64 bg-muted rounded-lg flex items-center justify-center">
-                <div className="text-center">
-                  <MapPin className="w-12 h-12 text-accent mx-auto mb-4" />
-                  <p className="text-muted-foreground">{t.interactiveMap}</p>
-                </div>
+              {/* Interactive Google Maps */}
+              <div className="h-80 bg-muted rounded-lg overflow-hidden shadow-lg">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3396.1234567890123!2d34.7358016!3d31.3804224!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x150262675d5d5663%3A0x6db9f5c5438d433c!2s%D7%93%D7%95%D7%9E%D7%99%D7%90%D7%9F%20%D7%90%D7%93%D7%A8%D7%99%D7%9B%D7%9C%D7%95%D7%AA!5e0!3m2!1sen!2sil!4v1234567890"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="DOMYAN Architecture Office Location"
+                  className="w-full h-full"
+                ></iframe>
               </div>
             </motion.div>
           </div>
@@ -1196,15 +1360,25 @@ const Index = () => {
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
-              <div className="text-3xl font-serif font-bold text-green-gradient mb-4">DOMYAN</div>
+              <a 
+                href="#main-content" 
+                className="text-3xl font-serif font-bold text-green-gradient mb-4 hover:text-green-400 transition-colors cursor-pointer block"
+              >
+                DOMYAN
+              </a>
               <p className="text-dark-foreground/80 mb-6 max-w-md">
                 {t.footerDescription}
               </p>
               <div className="flex space-x-4">
-                {/* Twitter */}
-                <a href="#" className="w-10 h-10 bg-[#1DA1F2]/10 rounded-full flex items-center justify-center text-[#1DA1F2] hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                {/* Waze */}
+                <a 
+                  href="https://waze.com/ul?ll=31.3804224,34.7369904&navigate=yes&q=%D7%93%D7%95%D7%9E%D7%99%D7%90%D7%9F%20%D7%90%D7%93%D7%A8%D7%99%D7%9B%D7%9C%D7%95%D7%AA"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-[#33C1FF]/10 rounded-full flex items-center justify-center text-[#33C1FF] hover:bg-[#33C1FF] hover:text-white transition-colors"
+                >
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 7a1 1 0 11-2 0 1 1 0 012 0zm3.5 0a1 1 0 11-2 0 1 1 0 012 0zm-1.75 3.5c-1.5 0-2.5-.7-2.5-1.8h5c0 1.1-1 1.8-2.5 1.8z"/>
                   </svg>
                 </a>
                 
@@ -1252,24 +1426,110 @@ const Index = () => {
           </div>
           
           <div className="border-t border-dark-foreground/20 mt-12 pt-8 text-center text-dark-foreground/60">
-            <p>{t.footerFinalCopyright}</p>
+            <p>
+              {(() => {
+                const namePatterns = {
+                  'he': 'פארס אלקרינאוי',
+                  'ar': 'فارس القريناوي', 
+                  'en': 'Faris Alkrinawi'
+                };
+                const currentName = namePatterns[language as keyof typeof namePatterns] || namePatterns['he'];
+                const parts = t.footerFinalCopyright.split(currentName);
+                
+                return parts.map((part, index) => (
+                  <React.Fragment key={index}>
+                    {part}
+                    {index === 0 && (
+                      <motion.span
+                        className="inline-block font-bold bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-500 bg-clip-text text-transparent relative"
+                        animate={{
+                          backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+                          scale: [1, 1.05, 1],
+                        }}
+                        transition={{
+                          duration: 3,
+                          repeat: Infinity,
+                          ease: "easeInOut"
+                        }}
+                        style={{
+                          backgroundSize: '200% 200%',
+                          textShadow: '0 0 20px rgba(255, 215, 0, 0.6), 0 0 40px rgba(255, 215, 0, 0.4), 0 0 60px rgba(255, 215, 0, 0.2)',
+                          filter: 'drop-shadow(0 0 12px rgba(255, 215, 0, 0.5))'
+                        }}
+                      >
+                        {currentName}
+                        <motion.div
+                          className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-200/30 to-transparent"
+                          animate={{
+                            x: ['-100%', '100%'],
+                          }}
+                          transition={{
+                            duration: 2,
+                            repeat: Infinity,
+                            repeatDelay: 1,
+                            ease: "easeInOut"
+                          }}
+                          style={{
+                            transform: 'skewX(-20deg)',
+                            width: '50%'
+                          }}
+                        />
+                      </motion.span>
+                    )}
+                  </React.Fragment>
+                ));
+              })()}
+            </p>
           </div>
         </div>
       </footer>
 
       {/* Floating WhatsApp Button */}
-      <motion.a href="https://wa.me/972524460770?text=Hello%20Domyan,%20I'm%20interested%20in%20discussing%20a%20luxury%20architecture%20project" target="_blank" rel="noopener noreferrer" className="fixed bottom-8 right-8 w-16 h-16 bg-[#25D366] rounded-full flex items-center justify-center text-white shadow-luxury hover:scale-110 transition-all duration-500 z-50 floating-slow whatsapp-glow" initial={{
-      scale: 0
-    }} animate={{
-      scale: 1
-    }} transition={{
-      delay: 2,
-      duration: 0.5,
-      type: "spring"
-    }}>
-        <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
+      <motion.a 
+        href="https://wa.me/972524460770?text=Hello%20Domyan,%20I'm%20interested%20in%20discussing%20a%20luxury%20architecture%20project" 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        className="fixed bottom-8 right-8 w-16 h-16 bg-[#25D366] rounded-full flex items-center justify-center text-white shadow-luxury hover:scale-110 transition-all duration-500 z-50 floating-slow whatsapp-glow" 
+        initial={{
+          scale: 0,
+          rotate: -180
+        }} 
+        animate={{
+          scale: 1,
+          rotate: 0
+        }} 
+        transition={{
+          delay: 2,
+          duration: 0.8,
+          type: "spring",
+          stiffness: 200
+        }}
+        whileHover={{
+          scale: 1.15,
+          rotate: 5,
+          transition: { duration: 0.3, type: "spring" }
+        }}
+        whileTap={{
+          scale: 0.95,
+          transition: { duration: 0.1 }
+        }}
+      >
+        <motion.svg 
+          className="w-8 h-8" 
+          viewBox="0 0 24 24" 
+          fill="currentColor"
+          animate={{ 
+            rotate: [0, -5, 5, 0],
+            scale: [1, 1.05, 1]
+          }}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        >
           <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488" />
-        </svg>
+        </motion.svg>
       </motion.a>
     </div>;
 };
